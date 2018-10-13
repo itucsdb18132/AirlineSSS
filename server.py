@@ -114,7 +114,6 @@ def register():
     session['online']   = 1
     session['Username'] = _Username
     ActiveUser = User(_Username, _Fullname, _Email, 0)
-    session['User'] = ActiveUser
     session['Fullname'] = _Fullname
     session['Email'] = _Email
     session['Balance'] = 0

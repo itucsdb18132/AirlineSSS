@@ -3,7 +3,7 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-{% block title %} {{ username }} {% endblock %}
+{% block title %} {{ session.Username }} {% endblock %}
 {% block content %}
 
 <p>Welcome, {{ session.Fullname }}!<br>
