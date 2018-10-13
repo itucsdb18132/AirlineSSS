@@ -6,6 +6,7 @@
 {% block title %} {{ username }} {% endblock %}
 {% block content %}
 
-Welcome, {{ session.Username }}!
+<p>Welcome, {{ session.Fullname }}!<br>
+    Your balance is {{ session.Balance }} SCoins</p>
 
 {% endblock %}

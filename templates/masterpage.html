@@ -4,6 +4,10 @@
             {% block head %}
             <link rel="stylesheet" href="../static/styles/styles.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+            <link rel="icon" href="../static/icon.svg">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <meta  charset="UTF-8">
             <title>{% block title %}{% endblock %} - AirlineSSS</title>
             {% endblock %}
@@ -63,6 +67,12 @@
                     <label for="username"><b>Username</b></label>
                     <input type="text" placeholder="Enter Username" name="username" required>
 
+                    <label for="name"><b>Name</b></label>
+                    <input type="text" placeholder="Enter Your Name" name="name" required>
+
+                    <label for="email"><b>E-Mail Address</b></label>
+                    <input type="text" placeholder="Enter Password" name="email" required>
+
                     <label for="password"><b>Password</b></label>
                     <input type="password" placeholder="Enter Password" name="password" required>
 
@@ -75,13 +85,30 @@
 
     </body>
     <footer>
-    {% with messages = get_flashed_messages() %}
-	  {% if messages %}
-	    {% for message in messages %}
-			{{message}}
-		{% endfor %}
-	  {% endif %}
-	{% endwith %}
+        <!-- Modal -->
+        <div id="messageBox" class="message" role="dialog">
+          <div class="message-dialog">
+            <!-- Modal content-->
+            <div class="message-content">
+              <div class="message-header">
+                <button type="button" class="close" onclick="document.getElementById('messageBox').style.display='none'">&times;</button>
+                <h4 class="message-title">Message</h4>
+              </div>
+              <div class="message-body">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+              </div>
+              <div class="message-footer">
+              </div>
+            </div>
+
+          </div>
+        </div>
     </footer>
 <script>
 function myFunction() {
@@ -92,6 +119,13 @@ function myFunction() {
         x.className = "topnav";
     }
 }
+$(document).ready(function() {
+    var messages = "{{ get_flashed_messages() }}";
+
+    if (typeof messages != 'undefined' && messages != '[]') {
+        $("#messageBox").modal();
+    };
+});
 </script>
 </html>
 

@@ -24,7 +24,7 @@ body {
 }
 
 .active {
-  background-color: #4CAF50;
+  background-color: #004173;
   color: white;
 }
 
@@ -47,7 +47,7 @@ input[type=text], input[type=password] {
 /* Set a style for all buttons */
 .topnav a.loginbutton {
     float: right;
-    background-color: #4CAF50;
+    background-color: #004173;
     color: white;
     width: 100%;
 }
@@ -138,17 +138,29 @@ span.psw {
     cursor: pointer;
 }
 
-footer {
-   position: fixed;
-   z-index: 2;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   background-color: yellow;
-   opacity: 0.7;
-   color: white;
-   text-align: center;
+
+.message{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    left: 0;
+    bottom: 0;
+    width: 100%; /* Full width */
+    height: 125px; /* Full height */
+    overflow: none; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+.message-header button{
+    float: right;
+    top: 0;
+    right: 0;
+}
+/* Modal Content/Box */
+.message-content {
+    margin-left: 10%; /* 5% from the top, 15% from the bottom and centered */
+}
+
 
 /* Add Zoom Animation */
 .animate {
