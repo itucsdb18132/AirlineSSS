@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+    <head>
+            {% block head %}
+            <link rel="stylesheet" href="../static/styles/styles.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <meta  charset="UTF-8">
+            <title>{% block title %}{% endblock %} - AirlineSSS</title>
+            {% endblock %}
+    </head>
+    <body>
+        <div class="topnav" id="myTopnav">
+            <a href="{{ url_for('index') }}" class="active">Home</a>
+            <a href="#news">News</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+            {% if 'online' in session %}
+            <a href="{{ url_for('logout') }}" class="loginbutton" style="width:auto;">Logout</a>
+            <a href="{{ url_for('userpage') }}">Profile</a>
+            {% else %}
+            <a href="#login" onclick="document.getElementById('login_popup').style.display='block'" class="loginbutton" style="width:auto;">Login</a>
+            <a href="#register" onclick="document.getElementById('register_popup').style.display='block'" class="registerbutton" style="width:auto;">Register</a>
+            {% endif %}
+            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                    <i class="fa           fa-bars"></i>
+            </a>
+        </div>
+        <div id="login_popup" class="modal">
+
+            <form id="pop_up" class="modal-content animate" action="/login" method="post">
+                <div class="imgcontainer">
+                    <span onclick="document.getElementById('login_popup').style.display='none'" class="close" title="Close Modal">&times;</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Plane_Window_Flat_Icon_Vector.svg" alt="Avatar" class="avatar">
+                </div>
+
+                <div class="container">
+                    <label for="username"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="username" required>
+
+                    <label for="password"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="password" required>
+
+                    <button type="submit">Login</button>
+                    <label>
+                        <input type="checkbox" checked="checked" name="remember"> Remember me
+                    </label>
+                </div>
+
+                <div class="container" style="background-color:#f1f1f1">
+                  <span class="psw">Forgot <a href="#">password?</a></span>
+                </div>
+            </form>
+        </div>
+
+        <div id="register_popup" class="modal">
+
+            <form class="modal-content animate" action="/register" method="post">
+                <div class="imgcontainer">
+                    <span onclick="document.getElementById('register_popup').style.display='none'" class="close" title="Close Modal">&times;</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Plane_Window_Flat_Icon_Vector.svg" alt="Avatar" class="avatar">
+                </div>
+                <div class="container">
+                    <label for="username"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="username" required>
+
+                    <label for="password"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="password" required>
+
+                    <button type="submit">Register</button>
+                </div>
+
+            </form>
+        </div>
+        {% block content%}{% endblock %}
+
+    </body>
+    <footer>
+    {% with messages = get_flashed_messages() %}
+	  {% if messages %}
+	    {% for message in messages %}
+			{{message}}
+		{% endfor %}
+	  {% endif %}
+	{% endwith %}
+    </footer>
+<script>
+function myFunction() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
+</script>
+</html>
+
+
+
+
+

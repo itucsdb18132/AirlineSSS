@@ -1,0 +1,23 @@
+<html>
+   
+   <body>
+      Uçuş Listesi<br><br><br>
+	  
+	  <table border = 1>
+			<tr>
+				<th>Flight ID</th>
+				<th>Airport Name</th>
+				<th>City</th>
+				<th>Plane Model</th>
+			</tr>
+		 {% for flight in flights %}
+			<tr>
+				<td><a href="{{ url_for('flight', code = flight[0]) }}">{{ flight[0] }}</a></td>
+				<td>{{ flight[1] }}</td>
+				<td>{{ flight[2] }}</td>
+				<td>{{ flight[3] }}</td>
+			</tr>
+		 {% endfor %}
+	  </table>
+   </body>
+</html>
