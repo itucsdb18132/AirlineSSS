@@ -33,7 +33,25 @@ body {
   display: none;
 }
 
+table{
+    border: 2;
+    border-color: #14A0C8;
+    margin: 5% 0% 0% 5%; /* 5% from the top, 15% from the bottom and centered */
+}
+tr{
+    opacity: 0.8;
+}
+td,th{
+    padding: 15px;
+}
 
+p{
+    color: black;
+}
+
+.awhite:visited{
+    color: gray;
+}
 
 /* Full-width input fields */
 input[type=text], input[type=password] {
@@ -160,6 +178,16 @@ span.psw {
 /* Modal Content/Box */
 .message-content {
     margin-left: 10%; /* 5% from the top, 15% from the bottom and centered */
+}
+
+.blockcontainer {
+    margin: 5% 5% 5% 5%;
+    background-color: white;
+    border-radius: 20px;
+    min-height: 75%;
+}
+.blockcontainer-content {
+    padding: 5%;
 }
 
 

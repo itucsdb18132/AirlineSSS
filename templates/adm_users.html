@@ -1,0 +1,33 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+<p>Welcome, {{ session.Fullname }}!<br>
+    View user <a class="awhite" href="{{ url_for('adm_users') }}">list</a><br>
+    View flight <a class="awhite" href="{{ url_for('adm_flights') }}">list</a><br>
+</p>
+
+<table border="1">
+    <tr>
+        <th>Username</th>
+        <th>Fullname</th>
+        <th>E-Mail</th>
+        <th>User Role</th>
+        <th>Balance</th>
+    </tr>
+    {% for user in userlist %}
+        <tr>
+            <td><a class="awhite" href="{{ url_for('updateuser', username = user[0]) }}">{{ user[0] }}</a></td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>{{ user[3] }}</td>
+            <td>{{ user[4] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

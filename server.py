@@ -80,10 +80,14 @@ def login():
             ActiveUser = User(row[0], row[1], row[2], row[3])
             session['Fullname'] = row[1]
             session['Email'] = row[2]
+            session['Role'] = row[3]
             session['Balance'] = str(row[4])
-            return redirect(url_for('userpage'))
+            if ifAdmin():
+                return redirect(url_for('adminpage'))
+            else:
+                return redirect(url_for('userpage'))
         else:
-            return render_template('errorpage.html', message = 'Wrong username/password!')
+            return redirect(url_for('errorpage', message = 'Wrong username/password!'))
     except dbapi2.DatabaseError:
         connection.rollback()
         return "Hata!"
@@ -102,7 +106,7 @@ def register():
     """ % _Username
     cursor.execute(statement)
     if cursor.rowcount > 0:
-        return render_template('errorpage.html', message= 'This username already exists!')
+        return redirect(url_for('errorpage', message = 'This username already exists!'))
 
     statement = """INSERT INTO users (username, password) VALUES (%s, %s)
     """
@@ -124,7 +128,7 @@ def userpage():
     if 'online' in session:
         return render_template('userpage.html')
     else:
-        return render_template('errorpage.html', message = 'Not Authorized!')
+        return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
 @app.route("/logout")
 def logout():
@@ -132,7 +136,116 @@ def logout():
         session.clear()
         return redirect(url_for('index'))
     else:
-        return  render_template('errorpage.html', message = 'You need to log in first!')
+        return redirect(url_for('errorpage', message = 'You need to log in first!'))
+
+@app.route("/adminpage")
+def adminpage():
+    return render_template('adminpage.html')
+
+@app.route("/adm_users")
+def adm_users():
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            username = session['Username']
+            statement = """SELECT * FROM person WHERE username <> '%s'
+            """ % username
+            cursor.execute(statement)
+            rows = cursor.fetchall()
+            return render_template('adm_users.html', userlist = rows)
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return e
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'You are not authorized!'))
+
+
+@app.route("/adm_users/<username>")
+def updateuser(username):
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """SELECT * FROM person WHERE username = '%s'
+            """ % username
+            cursor.execute(statement)
+            row = cursor.fetchone()
+            return render_template('adm_updateuser.html', user = row)
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return e
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'You are not authorized!'))
+
+@app.route('/adm_updateuser/<username>', methods = ['POST'])
+def adm_updateuser(username):
+    if ifAdmin():
+        try:
+            form_dict = request.form
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+
+            statement = """UPDATE person SET 
+            """
+            set_text = ""
+            if 'fname_cb' in form_dict and form_dict['fname_cb']:
+                set_text += ("fullname = '%s'" % form_dict['fullname']) + ','
+            if 'mail_cb' in form_dict and form_dict['mail_cb']:
+                set_text += ("emailaddress = '%s'" % form_dict['mail']) + ','
+            if 'role_cb' in form_dict and form_dict['role_cb']:
+                set_text += ("userrole = '%s'" % form_dict['role']) + ','
+            if 'balance_cb' in form_dict and form_dict['balance_cb']:
+                set_text += ("balance = '%s'" % form_dict['balance']) + ','
+            if len(set_text) > 0:
+                set_text = set_text[:-1]
+                statement += set_text
+                statement += " WHERE username = '%s'" % username
+            else:
+                return redirect(url_for('adm_users'))
+            cursor.execute(statement)
+            connection.commit()
+            return redirect(url_for('adm_users'))
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return e
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'You are not authorized!'))
+
+@app.route("/adm_flights")
+def adm_flights():
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """SELECT * FROM users WHERE username <> %s
+            """
+            cursor.execute(statement, str(session['Username']))
+            rows = cursor.fetchall()
+            return render_template('adm_users.html', userlist = rows)
+        except dbapi2.DatabaseError:
+            connection.rollback()
+            return "Hata!"
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+@app.route('/errorpage/<message>')
+def errorpage(message):
+    return  render_template('errorpage.html', message = message)
+
+def ifAdmin():
+    if 'Role' in session and session['Role'] == 'A':
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
     app.run()
