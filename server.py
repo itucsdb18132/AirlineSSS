@@ -19,45 +19,8 @@ class User:
 
 @app.route("/")
 def index():
+    refreshUserData()
     return render_template('index.html')
-
-@app.route("/flights/<int:code>/")
-def flight(code):
-    try:
-        connection = dbapi2.connect(dsn)
-        cursor = connection.cursor()
-        statement = """SELECT f."FlightID", air."AirportName", air."City", x."PlaneModel" From flights as f
-            inner join planes as x on x."PlaneID" = f."PlaneID"
-            inner join airports as air on air."AirportID" = f."DestinationID"
-            WHERE f."FlightID" = %d
-        """ % code
-        cursor.execute(statement)
-        row = cursor.fetchall()
-        return render_template('flights.html', flights = row)
-    except dbapi2.DatabaseError:
-        connection.rollback()
-        return "Hata!"
-    finally:
-        connection.close()
-
-
-@app.route("/flights/")
-def flights():
-    try:
-        connection = dbapi2.connect(dsn)
-        cursor = connection.cursor()
-        statement = """SELECT f."FlightID", air."AirportName", air."City", x."PlaneModel" From flights as f
-            inner join planes as x on x."PlaneID" = f."PlaneID"
-            inner join airports as air on air."AirportID" = f."DestinationID"
-        """
-        cursor.execute(statement)
-        rows = cursor.fetchall()
-        return render_template('flights.html', flights=rows)
-    except dbapi2.DatabaseError:
-        connection.rollback()
-        return "Hata!"
-    finally:
-        connection.close()
 
 @app.route("/login", methods = ['POST'])
 def login():
@@ -69,25 +32,24 @@ def login():
         statement = """SELECT * FROM users WHERE username = '%s'
         """ % _Username
         cursor.execute(statement)
-        password = cursor.fetchone()[1]
-        if password == _Password:
-            session['online'] = 1
-            session['Username'] = _Username
-            statement = """SELECT * FROM person WHERE username = '%s'
-            """ % _Username
-            cursor.execute(statement)
-            row = cursor.fetchone()
-            ActiveUser = User(row[0], row[1], row[2], row[3])
-            session['Fullname'] = row[1]
-            session['Email'] = row[2]
-            session['Role'] = row[3]
-            session['Balance'] = str(row[4])
-            if ifAdmin():
-                return redirect(url_for('adminpage'))
-            else:
-                return redirect(url_for('userpage'))
-        else:
-            return redirect(url_for('errorpage', message = 'Wrong username/password!'))
+        if cursor.rowcount > 0:
+            password = cursor.fetchone()[1]
+            if password == _Password:
+                session['online'] = 1
+                session['Username'] = _Username
+                statement = """SELECT * FROM person WHERE username = '%s'
+                """ % _Username
+                cursor.execute(statement)
+                row = cursor.fetchone()
+                session['Fullname'] = row[1]
+                session['Email'] = row[2]
+                session['Role'] = row[3]
+                session['Balance'] = str(row[4])
+                if ifAdmin():
+                    return redirect(url_for('adminpage'))
+                else:
+                    return redirect(url_for('userpage'))
+        return redirect(url_for('errorpage', message = 'Wrong username or password!'))
     except dbapi2.DatabaseError:
         connection.rollback()
         return "Hata!"
@@ -117,7 +79,6 @@ def register():
     connection.commit()
     session['online']   = 1
     session['Username'] = _Username
-    ActiveUser = User(_Username, _Fullname, _Email, 0)
     session['Fullname'] = _Fullname
     session['Email'] = _Email
     session['Balance'] = 0
@@ -126,6 +87,7 @@ def register():
 @app.route("/userpage/")
 def userpage():
     if 'online' in session:
+        refreshUserData()
         return render_template('userpage.html')
     else:
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
@@ -140,7 +102,10 @@ def logout():
 
 @app.route("/adminpage")
 def adminpage():
-    return render_template('adminpage.html')
+    if ifAdmin():
+        return render_template('adminpage.html')
+    else:
+        return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 @app.route("/adm_users")
 def adm_users():
@@ -161,7 +126,6 @@ def adm_users():
             connection.close()
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
-
 
 @app.route("/adm_users/<username>")
 def updateuser(username):
@@ -241,11 +205,67 @@ def adm_flights():
 def errorpage(message):
     return  render_template('errorpage.html', message = message)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 def ifAdmin():
-    if 'Role' in session and session['Role'] == 'A':
-        return True
+    if 'Username' in session:
+        _Refreshed = refreshUserData()
+        if _Refreshed:
+            if session['Role'] == 'A':
+                return True
+        else:
+            return _Refreshed
+    return False
+
+def refreshUserData():
+    if 'Username' in session:
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """SELECT * FROM person WHERE username = '%s'
+            """ % session['Username']
+            cursor.execute(statement)
+            row = cursor.fetchone()
+            session['Fullname'] = row[1]
+            session['Email'] = row[2]
+            session['Role'] = row[3]
+            session['Balance'] = str(row[4])
+            return True
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return e
+        finally:
+            connection.close()
     else:
         return False
+
+@app.route('/deleteuser/<username>', methods=['post'])
+def deleteuser(username):
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """DELETE FROM users WHERE username = '%s'
+            """ % username
+            cursor.execute(statement)
+            statement = """DELETE FROM person WHERE username = '%s'
+            """ % username
+            cursor.execute(statement)
+            connection.commit()
+            return render_template('adm_users.html')
+        except dbapi2.DatabaseError:
+            connection.rollback()
+            return "Hata!"
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+@app.route('/news')
+def news():
+    return render_template('news.html')
 
 if __name__ == "__main__":
     app.run()

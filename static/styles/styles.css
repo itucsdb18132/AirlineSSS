@@ -183,11 +183,15 @@ span.psw {
 .blockcontainer {
     margin: 5% 5% 5% 5%;
     background-color: white;
+    box-shadow: 0 0px 25px 0 rgba(0, 0, 0, 0.2), 0 0px 50px 0px rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     min-height: 75%;
 }
 .blockcontainer-content {
     padding: 5%;
+}
+.blockcontainer:hover {
+    box-shadow: 0 0px 50px 0px rgba(0, 0, 0, 0.2), 0 0px 100px 0px rgba(200, 200, 200, 0.8);
 }
 
 
