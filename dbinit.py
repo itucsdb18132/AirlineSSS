@@ -20,7 +20,7 @@ INIT_STATEMENTS = [
                     ON UPDATE RESTRICT
                     ON DELETE CASCADE
             )
-    """
+    """,
     "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
     "INSERT INTO DUMMY VALUES (42)",
 ]
