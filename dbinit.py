@@ -7,22 +7,30 @@ DATABASE_URL = 'postgres://kbktqbcfmdxpbw:76006678dc4edef0501db56d75112cacde489d
 
 INIT_STATEMENTS = [
     """
-        CREATE TABLE IF NOT EXISTS person2
+        CREATE TABLE IF NOT EXISTS person
             (
                 username character varying(20) NOT NULL,
                 fullname character varying(50) NOT NULL,
                 emailaddress character varying(70) NOT NULL,
                 userrole "char" NOT NULL,
                 balance numeric(7,2) NOT NULL DEFAULT 0,
-                CONSTRAINT person_pkey2 PRIMARY KEY (username),
-                CONSTRAINT username2 FOREIGN KEY (username)
+                CONSTRAINT person_pkey PRIMARY KEY (username),
+                CONSTRAINT person_fkey FOREIGN KEY (username)
                     REFERENCES users (username)
                     ON UPDATE RESTRICT
                     ON DELETE CASCADE
             )
     """,
-    "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
-    "INSERT INTO DUMMY VALUES (42)",
+    """
+        CREATE TABLE IF NOT EXISTS users
+            (
+                username character varying(20) NOT NULL,
+                password character varying(50) NOT NULL,
+                CONSTRAINT users_pkey PRIMARY KEY (username)
+            )
+    """,
+    "INSERT INTO users VALUES ('admin', 'admin')",
+    "INSERT INTO person VALUES ('admin', 'Admin User', 'admin@airlinesss.com', 'A', 99999.99)",
 ]
 
 
