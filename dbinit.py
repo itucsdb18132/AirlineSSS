@@ -32,7 +32,7 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS posts2
             (   postid integer NOT NULL DEFAULT nextval('posts_postid_seq'::regclass),
-                poster character varying(20 NOT NULL,
+                poster character varying(20) NOT NULL,
                 content character varying(400) NOT NULL,
                 date date,
                 "time" time without time zone,
