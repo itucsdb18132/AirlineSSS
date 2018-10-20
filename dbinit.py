@@ -29,8 +29,6 @@ INIT_STATEMENTS = [
                 CONSTRAINT users_pkey PRIMARY KEY (username)
             )
     """,
-    "INSERT INTO users VALUES ('admin', 'admin')",
-    "INSERT INTO person VALUES ('admin', 'Admin User', 'admin@airlinesss.com', 'A', 99999.99)",
 ]
 
 
