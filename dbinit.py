@@ -36,8 +36,8 @@ INIT_STATEMENTS = [
                 content character varying(400) NOT NULL,
                 date date,
                 "time" time without time zone,
-                CONSTRAINT posts_pkey PRIMARY KEY (postid),
-                CONSTRAINT username FOREIGN KEY (poster)
+                CONSTRAINT posts2_pkey PRIMARY KEY (postid),
+                CONSTRAINT posts2_fkey FOREIGN KEY (poster)
                     REFERENCES users (username)
                     ON UPDATE CASCADE
                     ON DELETE CASCADE
