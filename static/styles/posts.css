@@ -1,0 +1,42 @@
+.post{
+    width: 100%;
+    height: 350px;
+    padding: 5px;
+}.post table{
+    width: 100%;
+    height: 100%;
+}
+.post-left{
+    width: 30%;
+}
+.post-right{
+    width: 70%;
+}
+.profile-top{
+    height: 180px;
+    margin: auto;
+}
+.profile-bottom{
+    height: 120px;
+}
+.profile-image{
+    height: 150px;
+    width: 150px;
+}
+.post-content-top{
+    height: 240px;
+    float: top;
+}
+.post-content-bottom{
+    height: 60px;
+    float: bottom;
+}
+table{
+    margin: 0;
+}
+tr{
+    opacity: 1;
+}
+td,th{
+    padding: 0;
+}

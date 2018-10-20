@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, request, render_template, session, flash
 import psycopg2 as dbapi2
+import datetime
 
 
 app = Flask(__name__)
@@ -265,7 +266,41 @@ def deleteuser(username):
 
 @app.route('/news')
 def news():
-    return render_template('news.html')
+    connection = dbapi2.connect(dsn)
+    cursor = connection.cursor()
+    statement = """SELECT p.postid, f.fullname, p.poster, p.content, p.date, p.time, f.userrole FROM posts as p
+                LEFT OUTER JOIN person as f ON f.username = p.poster 
+                ORDER BY p.postid DESC
+    """
+    cursor.execute(statement)
+    posts = cursor.fetchall()
+    return render_template('news.html', posts = posts)
 
+@app.route('/sendpost', methods = ['post'])
+def sendpost():
+    refreshUserData()
+    if ifAdmin():
+        _Datetime = datetime.datetime.now()
+        poster = session['Username']
+        content = request.form['content']
+        date = _Datetime.strftime("%d/%m/%Y")
+        time = _Datetime.strftime("%H:%M")
+        connection = dbapi2.connect(dsn)
+        cursor = connection.cursor()
+        statement = """INSERT INTO posts (poster, content, date, time) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s)
+        """
+        cursor.execute(statement, (poster, content, date, time))
+        connection.commit()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+    return redirect(url_for('news'))
+
+@app.route('/adm_sendpost')
+def adm_sendpost():
+    refreshUserData()
+    if ifAdmin():
+        return render_template('/adm_sendpost.html')
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
 if __name__ == "__main__":
     app.run()
