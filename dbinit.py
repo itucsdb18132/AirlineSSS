@@ -29,6 +29,20 @@ INIT_STATEMENTS = [
                 CONSTRAINT users_pkey PRIMARY KEY (username)
             )
     """,
+    """
+        CREATE TABLE IF NOT EXISTS posts2
+            (   postid integer NOT NULL DEFAULT nextval('posts_postid_seq'::regclass),
+                poster character varying(20 NOT NULL,
+                content character varying(400) NOT NULL,
+                date date,
+                "time" time without time zone,
+                CONSTRAINT posts_pkey PRIMARY KEY (postid),
+                CONSTRAINT username FOREIGN KEY (poster)
+                    REFERENCES users (username)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE
+            )
+    """,
 ]
 
 
