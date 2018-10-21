@@ -9,12 +9,11 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS person
             (
-                username character varying(20) NOT NULL,
+                username character varying(20) PRIMARY KEY,
                 fullname character varying(50) NOT NULL,
                 emailaddress character varying(70) NOT NULL,
                 userrole "char" NOT NULL,
                 balance numeric(7,2) NOT NULL DEFAULT 0,
-                CONSTRAINT person_pkey PRIMARY KEY (username),
                 CONSTRAINT person_fkey FOREIGN KEY (username)
                     REFERENCES users (username)
                     ON UPDATE RESTRICT
@@ -24,24 +23,47 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS users
             (
-                username character varying(20) NOT NULL,
-                password character varying(50) NOT NULL,
-                CONSTRAINT users_pkey PRIMARY KEY (username)
+                username character varying(20) PRIMARY KEY,
+                password character varying(50) NOT NULL
             )
     """,
     """
         CREATE TABLE IF NOT EXISTS posts
-            (   postid integer NOT NULL DEFAULT nextval('posts_postid_seq'::regclass),
+            (   postid SERIAL PRIMARY KEY,
                 poster character varying(20) NOT NULL,
                 content character varying(400) NOT NULL,
                 date date,
                 "time" time without time zone,
-                CONSTRAINT posts_pkey PRIMARY KEY (postid),
                 CONSTRAINT posts_fkey FOREIGN KEY (poster)
                     REFERENCES users (username)
                     ON UPDATE CASCADE
                     ON DELETE CASCADE
             )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS payments
+            (   paymentid SERIAL PRIMARY KEY,
+                username character varying(20) NOT NULL,
+                amount numeric(7,2) NOT NULL,
+                approved char NOT NULL DEFAULT '0',
+                approved_by character varying(20),
+                CONSTRAINT payments_fkey FOREIGN KEY (username)
+                    REFERENCES users (username)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+                CONSTRAINT payments_fkey2 FOREIGN KEY (approved_by)
+                    REFERENCES users (username)
+                    ON UPDATE CASCADE
+                    ON DELETE NO ACTION
+            )
+    """,
+    """
+        INSERT INTO users
+        SELECT 'admin', 'admin' WHERE NOT EXISTS(select * from users where username='admin')
+    """,
+    """
+        INSERT INTO person
+        SELECT 'admin','Administrator', 'admin@airlinesss.com', 'A' WHERE NOT EXISTS(select * from person where username='admin')
     """,
 ]
 

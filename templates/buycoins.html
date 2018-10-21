@@ -1,0 +1,17 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} Buy SCoins {% endblock %}
+{% block content %}
+
+<p>Welcome, {{ session.Fullname }}!<br></p>
+
+<form action="/buycoins" method="post">
+    <label for="amount">Amount:</label>
+    <input type="text" name="amount" placeholder="0.00">
+    <button type="submit">Buy</button>
+</form>
+
+{% endblock %}

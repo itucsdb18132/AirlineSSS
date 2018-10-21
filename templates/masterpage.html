@@ -20,6 +20,8 @@
             {% if 'online' in session %}
                 {% if session.Role == 'A' %}
                     <a href="{{ url_for('adminpage') }}">Admin Panel</a>
+                {% else %}
+                    <a href="{{ url_for('buycoins') }}">Buy Coins</a>
                 {% endif %}
                 <a href="{{ url_for('userpage') }}">Profile</a>
                 <a href="{{ url_for('logout') }}" class="loginbutton" style="width:auto;">Logout</a>

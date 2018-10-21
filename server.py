@@ -83,6 +83,7 @@ def register():
     session['Fullname'] = _Fullname
     session['Email'] = _Email
     session['Balance'] = 0
+    flash('You have been succesfully registered.')
     return redirect(url_for('userpage'))
 
 @app.route("/userpage/")
@@ -174,6 +175,7 @@ def adm_updateuser(username):
                 return redirect(url_for('adm_users'))
             cursor.execute(statement)
             connection.commit()
+            flash('You have succesfully updated a user.')
             return redirect(url_for('adm_users'))
         except dbapi2.DatabaseError as e:
             connection.rollback()
@@ -255,6 +257,7 @@ def deleteuser(username):
             """ % username
             cursor.execute(statement)
             connection.commit()
+            flash('You have succesfully deleted a user.')
             return render_template('adm_users.html')
         except dbapi2.DatabaseError:
             connection.rollback()
@@ -291,6 +294,7 @@ def sendpost():
         """
         cursor.execute(statement, (poster, content, date, time))
         connection.commit()
+        flash('You have succesfully posted an entry.')
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
     return redirect(url_for('news'))
@@ -299,8 +303,85 @@ def sendpost():
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
-        return render_template('/adm_sendpost.html')
+        return render_template('adm_sendpost.html')
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+@app.route('/buycoins', methods=['GET', 'POST'])
+def buycoins():
+    if request.method == 'GET':
+        return render_template('buycoins.html')
+    elif request.method == 'POST':
+        amount = request.form['amount']
+        refreshUserData()
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """INSERT INTO payments(username, amount) VALUES(%s, %s)
+            """
+            cursor.execute(statement, (session['Username'], amount))
+            connection.commit()
+            flash('Payment request has been sent to admins.')
+            return redirect(url_for('userpage'))
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return str(e)
+        finally:
+            connection.close()
+
+@app.route('/adm_pymreqs', methods=['GET','POST'])
+def adm_pymreqs():
+    refreshUserData()
+    if ifAdmin():
+        if request.method == 'GET':
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT paymentid, username, amount FROM payments WHERE approved = '0'
+                                ORDER BY paymentid ASC
+                """
+                cursor.execute(statement)
+                payments = cursor.fetchall()
+                return render_template('adm_pymreqs.html', payments = payments)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata!"
+            finally:
+                connection.close()
+            return render_template('adm_pymreqs.html')
+        elif request.method == 'POST':
+            try:
+                for key in request.form.keys():
+                    pymId = key[3:]
+                    if request.form[key]:
+
+                        connection = dbapi2.connect(dsn)
+                        cursor = connection.cursor()
+                        statement = """UPDATE payments SET approved = %s, approved_by = %s WHERE paymentid = %s
+                        """
+                        cursor.execute(statement, ('1', session['Username'], pymId))
+
+                        ##statement = """SELECT amount FROM payments WHERE paymentid = %s
+                        ##"""
+                        ##cursor.execute(statement, (pymId))
+                        ##amount = cursor.fetchone()
+
+                        statement = """UPDATE person
+                                        SET balance = t1.balance + t2.amount
+                                        FROM person as t1
+                                        INNER JOIN payments as t2 ON t2.username = t1.username 
+                                        WHERE t2.paymentid = %s
+                                          AND person.username = t2.username;
+                        """ % pymId
+                        cursor.execute(statement)
+                        connection.commit()
+                flash('Approved requests')
+                return redirect(url_for('adm_pymreqs'))
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+
 if __name__ == "__main__":
     app.run()
