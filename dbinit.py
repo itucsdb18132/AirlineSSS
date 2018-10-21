@@ -58,6 +58,13 @@ INIT_STATEMENTS = [
             )
     """,
     """
+        CREATE TABLE IF NOT EXISTS flights
+            (   flight_id numeric(7,0) PRIMARY KEY,
+                destination_id  numeric(7,0) NOT NULL,
+                plane_id numeric(7,0) NOT NULL,
+            )
+    """,
+    """
         INSERT INTO users
         SELECT 'admin', 'admin' WHERE NOT EXISTS(select * from users where username='admin')
     """,
