@@ -186,7 +186,7 @@ def adm_updateuser(username):
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 @app.route("/adm_flights")
-def adm_flights():
+def flights():
     if ifAdmin():
         try:
             connection = dbapi2.connect(dsn)
