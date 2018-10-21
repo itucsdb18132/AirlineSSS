@@ -186,7 +186,7 @@ def adm_updateuser(username):
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 @app.route("/adm_flights")
-def flights():
+def adm_flights():
     if ifAdmin():
         try:
             connection = dbapi2.connect(dsn)
@@ -195,7 +195,7 @@ def flights():
             """
             cursor.execute(statement)
             rows = cursor.fetchall()
-            return render_template('flights.html', flight = rows)
+            return render_template('adm_flights.html', flight = rows)
         except dbapi2.DatabaseError:
             connection.rollback()
             return "Hata!"
