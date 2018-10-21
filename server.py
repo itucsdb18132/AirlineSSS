@@ -191,7 +191,7 @@ def adm_flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT * FROM users WHERE username <> %s
+            statement = """SELECT * FROM flights WHERE FlightID <> %s
             """
             cursor.execute(statement, str(session['Username']))
             rows = cursor.fetchall()
