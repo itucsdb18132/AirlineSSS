@@ -191,11 +191,11 @@ def adm_flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT * FROM flights WHERE FlightID <> %s
+            statement = """SELECT * FROM flights WHERE flight_id <> %s
             """
             cursor.execute(statement, str(session['Username']))
             rows = cursor.fetchall()
-            return render_template('adm_users.html', userlist = rows)
+            return render_template('flights.html', flightlist = rows)
         except dbapi2.DatabaseError:
             connection.rollback()
             return "Hata!"
