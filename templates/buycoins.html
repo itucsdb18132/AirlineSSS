@@ -5,13 +5,18 @@
 {% endblock %}
 {% block title %} Buy SCoins {% endblock %}
 {% block content %}
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+        <p>Welcome, {{ session.Fullname }}!<br></p>
 
-<p>Welcome, {{ session.Fullname }}!<br></p>
+        <form action="/buycoins" method="post">
+            <label for="amount">Amount:</label>
+            <input type="text" name="amount" placeholder="0.00">
+            <button type="submit">Buy</button>
+        </form>
 
-<form action="/buycoins" method="post">
-    <label for="amount">Amount:</label>
-    <input type="text" name="amount" placeholder="0.00">
-    <button type="submit">Buy</button>
-</form>
+    </div>
+</div>
+
 
 {% endblock %}

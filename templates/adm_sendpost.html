@@ -5,15 +5,20 @@
 {% endblock %}
 {% block title %} ADMIN PANEL {% endblock %}
 {% block content %}
-    <form action="/sendpost" method="post">
-        <table>
-            <tr>
-                <td><textarea rows="5" cols="100" name="content" placeholder="Enter something..."></textarea></td>
-            </tr>
-            <tr>
-                <td><button type="submit">POST</button></td>
-            </tr>
-        </table>
-    </form>
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+        <form action="/sendpost" method="post">
+            <table>
+                <tr>
+                    <td><textarea rows="5" cols="100" name="content" placeholder="Enter something..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><button type="submit">POST</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
 
 {% endblock %}
