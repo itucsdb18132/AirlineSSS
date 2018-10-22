@@ -59,22 +59,30 @@ INIT_STATEMENTS = [
     """,
     """
         CREATE TABLE IF NOT EXISTS flights
-            (   flight_id numeric(7,0) PRIMARY KEY,
-                destination_id  numeric(7,0) NOT NULL,
-                plane_id numeric(7,0) NOT NULL,
+            (   flight_id integer PRIMARY KEY,
+                destination_id  integer NOT NULL,
+                plane_id integer NOT NULL,
+                CONSTRAINT flights_fkey FOREIGN KEY (plane_id)
+                    REFERENCES planes (plane_id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT,
+                CONSTRAINT flights_fkey2 FOREIGN KEY (destination_id)
+                    REFERENCES airports (airport_id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
             )
     """,
     """
         CREATE TABLE IF NOT EXISTS planes
-            (   plane_id numeric(7,0) PRIMARY KEY,
-                plane_model  numeric(7,0) NOT NULL,
+            (   plane_id integer PRIMARY KEY,
+                plane_model character varying(30) NOT NULL
             )
     """,
     """
         CREATE TABLE IF NOT EXISTS airports
-            (   airport_id numeric(7,0) PRIMARY KEY,
+            (   airport_id integer PRIMARY KEY,
                 airport_name  character varying(20) NOT NULL,
-                city character varying(20) NOT NULL,
+                city character varying(20) NOT NULL
             )
     """,
     """
