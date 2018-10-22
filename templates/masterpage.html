@@ -18,6 +18,7 @@
         <div class="topnav" id="myTopnav">
             <a href="{{ url_for('index') }}" class="active">Home</a>
             <a href="{{ url_for('news') }}">News</a>
+            <a href="{{ url_for('flights') }}">Flights</a>
             <a href="{{ url_for('about') }}">About</a>
             {% if 'online' in session %}
                 {% if session.Role == 'A' %}
