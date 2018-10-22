@@ -185,17 +185,17 @@ def adm_updateuser(username):
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
-@app.route("/adm_flights")
-def adm_flights():
+@app.route("/flights")
+def flights():
     if ifAdmin():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT * FROM flights WHERE flight_id <> %s
+            statement = """SELECT * FROM flights
             """
             cursor.execute(statement)
             rows = cursor.fetchall()
-            return render_template('adm_flights.html', flight = rows)
+            return render_template('flights.html', flight = rows)
         except dbapi2.DatabaseError:
             connection.rollback()
             return "Hata!"

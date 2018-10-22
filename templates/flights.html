@@ -18,9 +18,10 @@
 		</tr>
 	 {% for flight in flights %}
 		<tr>
-			<td><a href="{{ url_for('adm_flight', code = flight[0]) }}">{{ flight[0] }}</a></td>
+			<td>{{ flight[0] }}</td>
 			<td>{{ flight[1] }}</td>
 			<td>{{ flight[2] }}</td>
 		</tr>
 	 {% endfor %}
   </table>
+{% endblock %}
