@@ -58,6 +58,19 @@ INIT_STATEMENTS = [
             )
     """,
     """
+        CREATE TABLE IF NOT EXISTS planes
+             (   plane_id integer PRIMARY KEY,
+                plane_model character varying(30) NOT NULL
+            )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS airports
+             (   airport_id integer PRIMARY KEY,
+                 airport_name  character varying(20) NOT NULL,
+                 city character varying(20) NOT NULL
+             )
+    """,
+    """
         CREATE TABLE IF NOT EXISTS flights
             (   flight_id integer PRIMARY KEY,
                 destination_id  integer NOT NULL,
@@ -70,19 +83,6 @@ INIT_STATEMENTS = [
                     REFERENCES airports (airport_id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT
-            )
-    """,
-    """
-        CREATE TABLE IF NOT EXISTS planes
-            (   plane_id integer PRIMARY KEY,
-                plane_model character varying(30) NOT NULL
-            )
-    """,
-    """
-        CREATE TABLE IF NOT EXISTS airports
-            (   airport_id integer PRIMARY KEY,
-                airport_name  character varying(20) NOT NULL,
-                city character varying(20) NOT NULL
             )
     """,
     """
