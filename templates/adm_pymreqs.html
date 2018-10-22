@@ -6,34 +6,40 @@
 {% block title %} ADMIN PANEL {% endblock %}
 {% block content %}
 
-{% if payments %}
-    <form action="/adm_pymreqs" method="post">
-        <table>
-            <tr>
-                <th>Payment ID</th>
-                <th>Username</th>
-                <th>Amount</th>
-                <th>Approve</th>
-            </tr>
-            {% for payment in payments %}
-                <tr>
-                    <td>{{ payment[0] }}</td>
-                    <td>{{ payment[1] }}</td>
-                    <td>{{ payment[2] }}</td>
-                    <td><input type="checkbox" name="cb_{{ payment[0] }}"></td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td><button type="submit">APPROVE</button> </td>
-                <td></td>
-            </tr>
-        </table>
-    </form>
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
 
-{% else %}
-    No requests!
-{% endif %}
+    {% if payments %}
+        <form action="/adm_pymreqs" method="post">
+            <table>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Username</th>
+                    <th>Amount</th>
+                    <th>Approve</th>
+                </tr>
+                {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment[0] }}</td>
+                        <td>{{ payment[1] }}</td>
+                        <td>{{ payment[2] }}</td>
+                        <td><input type="checkbox" name="cb_{{ payment[0] }}"></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><button type="submit">APPROVE</button> </td>
+                    <td></td>
+                </tr>
+            </table>
+        </form>
+
+    {% else %}
+        No requests!
+    {% endif %}
+
+    </div>
+</div>
 
 {% endblock %}

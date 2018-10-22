@@ -5,23 +5,27 @@
 {% block title %} ADMIN PANEL {% endblock %}
 {% block content %}
 
+=======
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+		<p>
+		  Flight List<br><br><br>
+		</p>
+		<table border = 1>
+			<tr>
+				<th>Flight ID</th>
+				<th>Destination ID</th>
+				<th>Plane ID</th>
+			</tr>
+			{% for flight in flights %}
+				<tr>
+					<td>{{ flight[0] }}</td>
+					<td>{{ flight[1] }}</td>
+					<td>{{ flight[2] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
 
-   
-<p>
-  Uçuş Listesi<br><br><br>
-</p>
-  <table border = 1>
-		<tr>
-			<th>Flight ID</th>
-			<th>Destination ID</th>
-			<th>Plane ID</th>
-		</tr>
-	 {% for flight in flights %}
-		<tr>
-			<td>{{ flight[0] }}</td>
-			<td>{{ flight[1] }}</td>
-			<td>{{ flight[2] }}</td>
-		</tr>
-	 {% endfor %}
-  </table>
 {% endblock %}

@@ -5,8 +5,13 @@
 {% endblock %}
 {% block title %} {{ session.Username }} {% endblock %}
 {% block content %}
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+        <p>Welcome, {{ session.Fullname }}!<br>
+            Your balance is {{ session.Balance }} SCoins</p>
+    </div>
+</div>
 
-<p>Welcome, {{ session.Fullname }}!<br>
-    Your balance is {{ session.Balance }} SCoins</p>
+
 
 {% endblock %}

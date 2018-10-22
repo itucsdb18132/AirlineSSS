@@ -5,105 +5,109 @@
 {% endblock %}
 {% block title %} ADMIN PANEL {% endblock %}
 {% block content %}
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
 
-<p>Welcome, {{ session.Fullname }}!<br>
-    View user <a class="awhite" href="{{ url_for('adm_users') }}">list</a><br>
-    View flight <a class="awhite" href="{{ url_for('adm_flights') }}">list</a><br>
-</p>
-{% if user %}
-<table>
-    <tr>
-        <td>
-            <form action="/deleteuser/{{ user[0] }}" method="post">
-                <table border="1">
-                    <tr>
-                        <th>Username</th>
-                        <td>{{ user[0] }}</td>
-                    </tr>
-                        <th>Fullname</th>
-                        <td>{{ user[1] }}</td>
-                    </tr>
-                        <th>E-Mail</th>
-                        <td>{{ user[2] }}</td>
-                    </tr>
-                        <th>User Role</th>
-                        <td>{{ user[3] }}</td>
-                    </tr>
-                        <th>Balance</th>
-                        <td>{{ user[4] }}</td>
-                    </tr>
-                    </tr>
-                        <td></td>
-                        <td>
-                            <button type="submit">DELETE USER</button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td>
-            <form action="/adm_updateuser/{{ user[0] }}" method="post">
-                <table>
-                    <tr>
-                        <td>
-                            <label>Fullname</label>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="{{ user[1] }}" name="fullname">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="fname_cb">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>E-Mail</label>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="{{ user[2] }}" name="mail">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="mail_cb">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>User Role</label>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="{{ user[3] }}" name="role">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="role_cb">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Balance</label>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="{{ user[4] }}" name="balance">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="balance_cb">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button type="submit">UPDATE</button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
+    <p>Welcome, {{ session.Fullname }}!<br>
+        View user <a class="awhite" href="{{ url_for('adm_users') }}">list</a><br>
+        View flight <a class="awhite" href="{{ url_for('adm_flights') }}">list</a><br>
+    </p>
+    {% if user %}
+    <table>
+        <tr>
+            <td>
+                <form action="/deleteuser/{{ user[0] }}" method="post">
+                    <table border="1">
+                        <tr>
+                            <th>Username</th>
+                            <td>{{ user[0] }}</td>
+                        </tr>
+                            <th>Fullname</th>
+                            <td>{{ user[1] }}</td>
+                        </tr>
+                            <th>E-Mail</th>
+                            <td>{{ user[2] }}</td>
+                        </tr>
+                            <th>User Role</th>
+                            <td>{{ user[3] }}</td>
+                        </tr>
+                            <th>Balance</th>
+                            <td>{{ user[4] }}</td>
+                        </tr>
+                        </tr>
+                            <td></td>
+                            <td>
+                                <button type="submit">DELETE USER</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td>
+                <form action="/adm_updateuser/{{ user[0] }}" method="post">
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Fullname</label>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="{{ user[1] }}" name="fullname">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="fname_cb">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>E-Mail</label>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="{{ user[2] }}" name="mail">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="mail_cb">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>User Role</label>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="{{ user[3] }}" name="role">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="role_cb">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Balance</label>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="{{ user[4] }}" name="balance">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="balance_cb">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit">UPDATE</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
 
-    </tr>
+        </tr>
 
-</table>
-{% else %}
-    <p>User not found!</p>
-{% endif %}
+    </table>
+    {% else %}
+        <p>User not found!</p>
+    {% endif %}
 
-<form></form>
+    </div>
+</div>
+
 
 {% endblock %}
