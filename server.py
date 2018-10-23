@@ -204,6 +204,26 @@ def flights():
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
+@app.route('/adm_updateflight', methods = ['POST'])
+def adm_updateflight():
+    if ifAdmin():
+        try:
+            form_dict = request.form
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """UPDATE flights SET
+            """
+            cursor.execute(statement)
+            rows = cursor.fetchall()
+            return render_template('adm_updateflight.html', flight = rows)
+        except dbapi2.DatabaseError:
+            connection.rollback()
+            return "Hata!"
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
 @app.route('/errorpage/<message>')
 def errorpage(message):
     return  render_template('errorpage.html', message = message)

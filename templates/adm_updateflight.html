@@ -1,0 +1,60 @@
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+       <form action="/adm_updateflight/{{ flight[0] }}" method="post">
+           <table>
+               <tr>
+                   <td>
+                       <label>Flight ID</label>
+                   </td>
+                   <td>
+                       <input type="text" placeholder="{{ flight[0] }}" id="flight">
+                   </td>
+                   <td>
+                       <input type="checkbox" name="flight_cb">
+                   </td>
+               </tr>
+               <tr>
+                   <td>
+                       <label>Destination ID</label>
+                   </td>
+                   <td>
+                       <input type="text" placeholder="{{ flight[1] }}" name="destination">
+                   </td>
+                   <td>
+                       <input type="checkbox" name="destination_cb">
+                   </td>
+               </tr>
+               <tr>
+                   <td>
+                       <label>Plane ID</label>
+                   </td>
+                   <td>
+                       <input type="text" placeholder="{{ flight[2] }}" name="plane">
+                   </td>
+                   <td>
+                       <input type="checkbox" name="plane_cb">
+                   </td>
+               </tr>
+               <tr>
+                   <td>
+                       <button type="submit">UPDATE</button>
+                   </td>
+               </tr>
+           </table>
+
+
+
+
+
+
+
+    </div>
+</div>
+{% endblock %}
