@@ -192,10 +192,11 @@ def flights():
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
             statement = """SELECT * FROM flights
-            """
+                        """
             cursor.execute(statement)
             rows = cursor.fetchall()
-            return render_template('flights.html', flight = rows)
+
+            return render_template('flights.html', flights=rows)
         except dbapi2.DatabaseError:
             connection.rollback()
             return "Hata!"
@@ -208,7 +209,7 @@ def flights():
 def adm_updateflight():
     if ifAdmin():
         try:
-            form_dict = request.form
+
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
             statement = """UPDATE flights SET
