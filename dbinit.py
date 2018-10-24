@@ -66,7 +66,7 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS airports
              (   airport_id integer PRIMARY KEY,
-                 airport_name  character varying(20) NOT NULL,
+                 airport_name  character varying(40) NOT NULL,
                  city character varying(20) NOT NULL
              )
     """,
