@@ -189,7 +189,7 @@ def adm_updateuser(username):
 
 @app.route("/flights")
 def flights():
-    if ifAdmin():
+
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
@@ -206,8 +206,7 @@ def flights():
             return "Hata!"
         finally:
             connection.close()
-    else:
-        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+    
 
 @app.route('/adm_updateflight', methods = ['POST'])
 def adm_updateflight():
