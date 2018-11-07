@@ -1,8 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template, session, flash
-import smtplib
-from email.mime.text import MIMEText
 import psycopg2 as dbapi2
 import datetime
+import mailsender
 
 
 app = Flask(__name__)
@@ -53,9 +52,9 @@ def login():
                 else:
                     return redirect(url_for('userpage'))
         return redirect(url_for('errorpage', message = 'Wrong username or password!'))
-    except dbapi2.DatabaseError:
+    except dbapi2.DatabaseError as e:
         connection.rollback()
-        return "Hata!"
+        return str(e)
     finally:
         connection.close()
 
@@ -420,11 +419,14 @@ def forgotpassword():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT emailaddress FROM person WHERE username = '%s'""" % username
+            statement = """SELECT p.emailaddress, u.password FROM person AS p
+                                INNER JOIN users AS u ON u.username = p.username
+                                WHERE p.username = '%s'
+            """ % username
             cursor.execute(statement)
             row = cursor.fetchone()
             if row:
-                sendMail(row[0])
+                mailsender.sendMail(row[1], row[0])
                 flash('Your password has been sent to your email address. Please check your inbox.')
                 return redirect(url_for('forgotpassword'))
             else:
@@ -436,8 +438,6 @@ def forgotpassword():
         finally:
             connection.close()
 
-def sendMail(mailaddress):
-    return 0
 
 if __name__ == "__main__":
     app.run()
