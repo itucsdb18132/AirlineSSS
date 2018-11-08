@@ -2,7 +2,7 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-{% block title %} ADMIN PANEL {% endblock %}
+{% block title %} Flight List {% endblock %}
 {% block content %}
 
 
@@ -14,6 +14,8 @@
 		<table border = 1>
 			<tr>
 				<th>Flight ID</th>
+				<th>Departure Airport</th>
+				<th>Departure City</th>
 				<th>Destination Airport</th>
 				<th>Destination City</th>
 				<th>Plane Model</th>
@@ -30,6 +32,8 @@
 					<td>{{flight[3]}}</td>
 					<td>{{flight[4]}}</td>
 					<td>{{flight[5]}}</td>
+					<td>{{flight[6]}}</td>
+					<td>{{flight[7]}}</td>
 				</tr>
 			{% endfor %}
 		</table>
