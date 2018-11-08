@@ -60,8 +60,9 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS planes
              (   plane_id integer PRIMARY KEY,
-                plane_model character varying(30) NOT NULL
-                
+                plane_model character varying(30) NOT NULL,
+                bsn_capacity integer,
+                eco_capacity integer
             )
     """,
     """
@@ -76,6 +77,8 @@ INIT_STATEMENTS = [
             (   flight_id integer PRIMARY KEY,
                 destination_id  integer NOT NULL,
                 plane_id integer NOT NULL,
+                departure_time timestamp without time zone,
+                arrival_time timestamp without time zone,
                
                 CONSTRAINT flights_fkey FOREIGN KEY (plane_id)
                     REFERENCES planes (plane_id)
