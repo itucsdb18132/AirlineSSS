@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request, render_template, session, f
 import psycopg2 as dbapi2
 import datetime
 import mailsender
+import decimal
 
 
 app = Flask(__name__)
@@ -483,7 +484,7 @@ def forgotpassword():
         finally:
             connection.close()
 
-@app.route('/buy_ticket/<int:flight_id>')
+@app.route('/buy_ticket/<int:flight_id>', methods = ['GET', 'POST'])
 def buy_ticket(flight_id):
 
     if 'Username' in session:
@@ -526,6 +527,52 @@ def buy_ticket(flight_id):
                 return "Hata!"
             finally:
                 connection.close()
+        elif request.method == 'POST':
+            try:
+                classtype = request.form['class']
+                session['Username']
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT ticket_id, price from tickets 
+                                    WHERE ticket_id = (SELECT MIN(ticket_id)
+                                        FROM tickets WHERE flight_id = %s AND username IS NULL AND class = %s)
+                                            AND flight_id = %s
+                  """
+                cursor.execute(statement, (flight_id, classtype, flight_id))
+                row = cursor.fetchone()
+                ticketid = row[0]
+                ticketprice = row[1]
+                if ticketprice <= decimal.Decimal(session['Balance']):
+                    statement = """UPDATE tickets 
+                                        SET username = %s
+                                            WHERE ticket_id = %s
+                                                AND flight_id = %s
+                                                
+                    
+                                    """
+                    cursor.execute(statement, (session['Username'], ticketid, flight_id))
+                    statement = """UPDATE person 
+                                        SET balance = balance-%s
+                                            WHERE username = %s
+    
+    
+                                    """
+                    cursor.execute(statement,(ticketprice, session['Username']))
+                    connection.commit()
+                    refreshUserData()
+                    flash('Ticket has been bought successfully. Your new balance is %s SCoins' % session['Balance'])
+
+                    return redirect(url_for('index'))
+                else:
+                    flash('Your balance is not enough!')
+                    return redirect(url_for('buycoins'))
+
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
 if __name__ == "__main__":

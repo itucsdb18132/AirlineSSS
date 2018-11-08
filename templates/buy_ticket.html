@@ -10,10 +10,14 @@
 	<div class="blockcontainer-content">
         <p>You have selected flightno: {{ flightid }} </p>
         <p>Your balance is {{balance}}</p>
-        <p>There are {{emptyseatsforeco}} empty seats in economy class and seat price is {{priceforeco}} TL. Click to buy</p>
-        <button onclick="/economy">Buy from Economy Class</button>
-        <p>There are {{emptyseatsforbsn}} empty seats in business class and seat price is {{priceforbsn}} TL. Click to buy</p>
-        <button onclick="/business">Buy from Business Class</button>
+        <p>There are {{emptyseatsforeco}} empty seats in economy class and seat price is {{priceforeco}} SCoin.</p>
+        <p>There are {{emptyseatsforbsn}} empty seats in business class and seat price is {{priceforbsn}} SCoin.</p>
+        <p>Choose class that you want to travel in</p>
+        <form action="/buy_ticket/{{ flightid }}" method="post">
+        <input type="radio" name="class" value="E"> Economy Class<br>
+        <input type="radio" name="class" value="B"> Business Class<br>
+        <button type="submit">Buy</button>
+        </form>
 	</div>
 </div>
 
