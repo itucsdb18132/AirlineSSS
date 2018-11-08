@@ -210,7 +210,7 @@ def flights():
 @app.route('/adm_updateflight/<flight_id>', methods = ['GET', 'POST'])
 def adm_updateflight():
     if ifAdmin():
-        if request.method = 'POST' :
+        if request.method == 'POST' :
             try:
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
