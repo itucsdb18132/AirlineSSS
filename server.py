@@ -22,6 +22,8 @@ class User:
 @app.route('/')
 def index():
     refreshUserData()
+    _Datetime = datetime.datetime.now()
+    date = _Datetime.strftime("%Y-%m-%d")
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
@@ -31,7 +33,7 @@ def index():
         cursor.execute(statement)
         rows = cursor.fetchall()
 
-        return render_template('index.html', cities=rows)
+        return render_template('index.html', cities=rows, date=date)
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
@@ -63,6 +65,7 @@ def searchList():
         return str(e)
     finally:
         connection.close()
+
 
 @app.route("/login", methods = ['POST'])
 def login():
