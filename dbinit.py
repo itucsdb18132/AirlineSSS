@@ -77,7 +77,7 @@ INIT_STATEMENTS = [
                 destination_id  integer NOT NULL,
                 plane_id integer NOT NULL,
                 departure_time TIME NOT NULL,
-                landing_time TIME NOY NULL,
+                landing_time TIME NOT NULL,
                 CONSTRAINT flights_fkey FOREIGN KEY (plane_id)
                     REFERENCES planes (plane_id)
                     ON UPDATE CASCADE
