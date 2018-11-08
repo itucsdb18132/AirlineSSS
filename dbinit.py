@@ -78,11 +78,11 @@ INIT_STATEMENTS = [
                  dep_airport character varying(40) NOT NULL,
                  dest_city integer NOT NULL,
                  dep_city integer NOT NULL,
-                 CONSTRAINT airports f_key FOREIGN KEY (dest_city)
+                 CONSTRAINT airports_fkey FOREIGN KEY (dest_city)
                     REFERENCES cities (city_id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT,
-                CONSTRAINT airports f_key2 FOREIGN KEY (dep_city)
+                CONSTRAINT airports_fkey2 FOREIGN KEY (dep_city)
                     REFERENCES cities (city_id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT
