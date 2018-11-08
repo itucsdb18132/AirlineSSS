@@ -19,10 +19,49 @@ class User:
         self.balance = balance
 
 
-@app.route("/")
+@app.route('/')
 def index():
     refreshUserData()
-    return render_template('index.html')
+    try:
+        connection = dbapi2.connect(dsn)
+        cursor = connection.cursor()
+        statement = """SELECT city FROM cities
+                        ORDER BY city
+                    """
+        cursor.execute(statement)
+        rows = cursor.fetchall()
+
+        return render_template('index.html', cities=rows)
+    except dbapi2.DatabaseError as e:
+        connection.rollback()
+        return str(e)
+    finally:
+        connection.close()
+
+@app.route('/searchList', methods=['GET', 'POST'])
+def searchList():
+    departure = request.form['from']
+    destination = request.form['to']
+    try:
+        connection = dbapi2.connect(dsn)
+        cursor = connection.cursor()
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+                                    INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                    INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                    INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                    INNER JOIN cities AS c ON a.city_id = c.city_id
+                                    INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                    WHERE c.city = %s AND c2.city = %s
+                                """
+        cursor.execute(statement, (departure,destination))
+        rows = cursor.fetchall()
+
+        return render_template('flights.html', flights=rows)
+    except dbapi2.DatabaseError as e:
+        connection.rollback()
+        return str(e)
+    finally:
+        connection.close()
 
 @app.route("/login", methods = ['POST'])
 def login():
@@ -192,11 +231,12 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.dep_airport, c2.city, a.dest_airport, c.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
-                            INNER JOIN airports AS a ON f.destination_id = a.airport_id
+            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
-                            INNER JOIN cities AS c ON a.dest_city = c.city_id
-                            INNER JOIN cities AS c2 ON a.dep_city = c2.city_id
+                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
                         """
             cursor.execute(statement)
             rows = cursor.fetchall()
