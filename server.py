@@ -207,23 +207,26 @@ def flights():
             connection.close()
 
 
-@app.route('/adm_updateflight', methods = ['POST'])
+@app.route('/adm_updateflight/<flight_id>', methods = ['GET', 'POST'])
 def adm_updateflight():
     if ifAdmin():
-        try:
+        if request.method = 'POST' :
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """UPDATE flights SET
+                """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+                return render_template('adm_updateflight.html', flight=rows)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata!"
+            finally:
+                connection.close()
+        else:
+            return render_template('adm_updateflight.html')
 
-            connection = dbapi2.connect(dsn)
-            cursor = connection.cursor()
-            statement = """UPDATE flights SET
-            """
-            cursor.execute(statement)
-            rows = cursor.fetchall()
-            return render_template('adm_updateflight.html', flight = rows)
-        except dbapi2.DatabaseError:
-            connection.rollback()
-            return "Hata!"
-        finally:
-            connection.close()
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
