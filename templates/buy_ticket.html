@@ -9,15 +9,28 @@
 <div class="blockcontainer">
 	<div class="blockcontainer-content">
         <p>You have selected flightno: {{ flightid }} </p>
+        {% if emptyseatsforeco != 0 or emptyseatsforbsn != 0 %}
         <p>Your balance is {{balance}}</p>
+        {% if emptyseatsforeco > 0 %}
         <p>There are {{emptyseatsforeco}} empty seats in economy class and seat price is {{priceforeco}} SCoin.</p>
+        {% endif %}
+        {% if emptyseatsforbsn > 0 %}
         <p>There are {{emptyseatsforbsn}} empty seats in business class and seat price is {{priceforbsn}} SCoin.</p>
+        {% endif %}
         <p>Choose class that you want to travel in</p>
         <form action="/buy_ticket/{{ flightid }}" method="post">
-        <input type="radio" name="class" value="E"> Economy Class<br>
-        <input type="radio" name="class" value="B"> Business Class<br>
+        {% if emptyseatsforeco > 0 %}
+        <input type="radio" name="class" value="E" checked="checked"> Economy Class<br>
+        {% endif %}
+        {% if emptyseatsforbsn > 0 %}
+        <input type="radio" name="class" value="B" checked="checked"> Business Class<br>
+        {% endif %}
         <button type="submit">Buy</button>
         </form>
+        {% else %}
+        <p>There are no empty seats for this flight</p>
+        {% endif %}
+
 	</div>
 </div>
 
