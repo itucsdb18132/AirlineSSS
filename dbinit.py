@@ -60,7 +60,7 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS planes
              (   plane_id integer PRIMARY KEY,
-                plane_model character varying(30) NOT NULL,
+                plane_model character varying(30) NOT NULL
                 
             )
     """,
