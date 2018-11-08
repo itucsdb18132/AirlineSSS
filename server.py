@@ -23,6 +23,8 @@ class User:
 @app.route('/')
 def index():
     refreshUserData()
+    _Datetime = datetime.datetime.now()
+    date = _Datetime.strftime("%Y-%m-%d")
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
@@ -32,7 +34,7 @@ def index():
         cursor.execute(statement)
         rows = cursor.fetchall()
 
-        return render_template('index.html', cities=rows)
+        return render_template('index.html', cities=rows, date=date)
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
@@ -43,6 +45,7 @@ def index():
 def searchList():
     departure = request.form['from']
     destination = request.form['to']
+    departure_time = request.form['date']
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
@@ -52,9 +55,9 @@ def searchList():
                                     INNER JOIN planes AS p ON f.plane_id = p.plane_id
                                     INNER JOIN cities AS c ON a.city_id = c.city_id
                                     INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
-                                    WHERE c.city = %s AND c2.city = %s
-                                """
-        cursor.execute(statement, (departure,destination))
+                                    WHERE c.city = %s AND c2.city = %s AND f.departure_time::text LIKE %s"""
+        departure_time += '%'
+        cursor.execute(statement, (departure, destination, departure_time))
         rows = cursor.fetchall()
 
         return render_template('flights.html', flights=rows)
@@ -63,6 +66,7 @@ def searchList():
         return str(e)
     finally:
         connection.close()
+
 
 @app.route("/login", methods = ['POST'])
 def login():
