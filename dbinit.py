@@ -100,7 +100,7 @@ INIT_STATEMENTS = [
                 CONSTRAINT flights_fkey2 FOREIGN KEY (destination_id)
                     REFERENCES airports (airport_id)
                     ON UPDATE CASCADE
-                    ON DELETE RESTRICT
+                    ON DELETE RESTRICT,
                 CONSTRAINT departure_fkey FOREIGN KEY (departure_id)
                     REFERENCES airports (airport_id)
                     ON UPDATE CASCADE
