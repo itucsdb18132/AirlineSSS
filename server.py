@@ -192,7 +192,7 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.airport_name, a.city, p.plane_model, f.departure_time, f.landing_time FROM flights AS f 
+            statement = """SELECT f.flight_id,a.airport_name, a.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
                             INNER JOIN airports AS a ON f.destination_id = a.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
                         """
@@ -200,9 +200,9 @@ def flights():
             rows = cursor.fetchall()
 
             return render_template('flights.html', flights=rows)
-        except dbapi2.DatabaseError:
+        except dbapi2.DatabaseError as e:
             connection.rollback()
-            return "Hata!"
+            return str(e)
         finally:
             connection.close()
 
