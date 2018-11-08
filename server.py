@@ -192,9 +192,11 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.dep_airport, a.dep_city, a.dest_airport, a.dest_city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+            statement = """SELECT f.flight_id,a.dep_airport, c2.city, a.dest_airport, c.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
                             INNER JOIN airports AS a ON f.destination_id = a.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                            INNER JOIN cities AS c ON a.dest_city = c.city_id
+                            INNER JOIN cities AS c2 ON a.dep_city = c2.city_id
                         """
             cursor.execute(statement)
             rows = cursor.fetchall()

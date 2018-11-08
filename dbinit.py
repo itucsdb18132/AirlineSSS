@@ -58,6 +58,12 @@ INIT_STATEMENTS = [
             )
     """,
     """
+            CREATE TABLE IF NOT EXISTS cities
+                (   city_id integer PRIMARY KEY,
+                    city character varying(20) NOT NULL
+                )
+    """,
+    """
         CREATE TABLE IF NOT EXISTS planes
              (   plane_id integer PRIMARY KEY,
                 plane_model character varying(30) NOT NULL,
@@ -70,8 +76,16 @@ INIT_STATEMENTS = [
              (   airport_id integer PRIMARY KEY,
                  dest_airport character varying(40) NOT NULL,
                  dep_airport character varying(40) NOT NULL,
-                 dest_city character varying(20) NOT NULL,
-                 dep_city character varying(20) NOT NULL
+                 dest_city integer NOT NULL,
+                 dep_city integer NOT NULL,
+                 CONSTRAINT airports f_key FOREIGN KEY (dest_city)
+                    REFERENCES cities (city_id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT,
+                CONSTRAINT airports f_key2 FOREIGN KEY (dep_city)
+                    REFERENCES cities (city_id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
              )
     """,
     """
@@ -88,20 +102,6 @@ INIT_STATEMENTS = [
                     ON DELETE RESTRICT,
                 CONSTRAINT flights_fkey2 FOREIGN KEY (destination_id)
                     REFERENCES airports (airport_id)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT
-            )
-    """,
-    """
-        CREATE TABLE IF NOT EXISTS cities
-            (   city character varying(20) NOT NULL,
-            
-                CONSTRAINT cities f_key FOREIGN KEY (city)
-                    REFERENCES airports (dest_city)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT,
-                CONSTRAINT cities f_key2 FOREIGN KEY (city)
-                    REFERENCES airports (dep_city)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT
             )
