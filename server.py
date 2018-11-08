@@ -441,6 +441,8 @@ def forgotpassword():
         finally:
             connection.close()
 
-
+@app.route('/buy_ticket/<int:flight_id>')
+def buy_ticket(flight_id):
+    return render_template('buy_ticket.html', flightid = flight_id)
 if __name__ == "__main__":
     app.run()
