@@ -80,7 +80,7 @@ INIT_STATEMENTS = [
                  CONSTRAINT airports_fkey FOREIGN KEY (city_id)
                     REFERENCES cities (city_id)
                     ON UPDATE CASCADE
-                    ON DELETE RESTRICT,
+                    ON DELETE RESTRICT
                 
              )
     """,
