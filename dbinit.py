@@ -74,24 +74,21 @@ INIT_STATEMENTS = [
     """
         CREATE TABLE IF NOT EXISTS airports
              (   airport_id integer PRIMARY KEY,
-                 dest_airport character varying(40) NOT NULL,
-                 dep_airport character varying(40) NOT NULL,
-                 dest_city integer NOT NULL,
-                 dep_city integer NOT NULL,
-                 CONSTRAINT airports_fkey FOREIGN KEY (dest_city)
+                 airport_name character varying(100) NOT NULL,
+                 city_id integer NOT NULL,
+                 
+                 CONSTRAINT airports_fkey FOREIGN KEY (city_id)
                     REFERENCES cities (city_id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT,
-                CONSTRAINT airports_fkey2 FOREIGN KEY (dep_city)
-                    REFERENCES cities (city_id)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT
+                
              )
     """,
     """
         CREATE TABLE IF NOT EXISTS flights
             (   flight_id integer PRIMARY KEY,
                 destination_id  integer NOT NULL,
+                departure_id integer NOT NULL,
                 plane_id integer NOT NULL,
                 departure_time timestamp without time zone,
                 arrival_time timestamp without time zone,
@@ -101,6 +98,10 @@ INIT_STATEMENTS = [
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT,
                 CONSTRAINT flights_fkey2 FOREIGN KEY (destination_id)
+                    REFERENCES airports (airport_id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
+                CONSTRAINT departure_fkey FOREIGN KEY (departure_id)
                     REFERENCES airports (airport_id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT

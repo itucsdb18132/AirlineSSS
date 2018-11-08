@@ -11,6 +11,7 @@
 		<p>
 		  Flight List<br><br><br>
 		</p>
+		{% if flights%}
 		<table border = 1>
 			<tr>
 				<th>Flight ID</th>
@@ -36,7 +37,13 @@
 					<td>{{flight[7]}}</td>
 				</tr>
 			{% endfor %}
+
+
 		</table>
+		{% else %}
+			<p>No flight</p>
+
+			{% endif %}
 	</div>
 </div>
 

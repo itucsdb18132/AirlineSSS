@@ -8,12 +8,35 @@
 <div class="blockcontainer">
   <div class="blockcontainer-content">
     <p>Search flights</p>
-    <select>
-      <option value="volvo">Volvo</option>
-      <option value="saab">Saab</option>
-      <option value="opel">Opel</option>
-      <option value="audi">Audi</option>
-</select>
+<form action="/searchList" method="post">
+   <table>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+        </tr>
+        <tr>
+            <td>
+                <select name="from">
+                    {% for city in cities %}
+                     <option value="{{city[0]}}">{{city[0]}}</option>
+                    {% endfor %}
+                </select>
+             </td>
+             <td>
+                <select name="to">
+                    {% for city in cities %}
+                     <option value="{{city[0]}}">{{city[0]}}</option>
+                    {% endfor %}
+                 </select>
+              </td>
+
+              <td>
+                  <button type="submit">SEARCH</button>
+              </td>
+        </tr>
+   </table>
+</form>
+
   </div>
 </div>
 
