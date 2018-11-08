@@ -191,7 +191,7 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.airport_name, a.city, p.plane_model FROM flights AS f 
+            statement = """SELECT f.flight_id,a.airport_name, a.city, p.plane_model, f.departure_time, f.landing_time FROM flights AS f 
                             INNER JOIN airports AS a ON f.destination_id = a.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
                         """
@@ -204,7 +204,7 @@ def flights():
             return "Hata!"
         finally:
             connection.close()
-    
+
 
 @app.route('/adm_updateflight', methods = ['POST'])
 def adm_updateflight():
