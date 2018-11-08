@@ -93,6 +93,20 @@ INIT_STATEMENTS = [
             )
     """,
     """
+        CREATE TABLE IF NOT EXISTS cities
+            (   city character varying(20) NOT NULL,
+            
+                CONSTRAINT cities f_key FOREIGN KEY (city)
+                    REFERENCES airports (dest_city)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT,
+                CONSTRAINT cities f_key2 FOREIGN KEY (city)
+                    REFERENCES airports (dep_city)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
+            )
+    """,
+    """
         INSERT INTO users
         SELECT 'admin', 'admin' WHERE NOT EXISTS(select * from users where username='admin')
     """,
