@@ -445,6 +445,48 @@ def forgotpassword():
 
 @app.route('/buy_ticket/<int:flight_id>')
 def buy_ticket(flight_id):
-    return render_template('buy_ticket.html', flightid = flight_id)
+
+    if 'Username' in session:
+        refreshUserData()
+        if request.method == 'GET':
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT class, COUNT(*) FROM tickets WHERE flight_id = '%s' AND username IS NULL 
+                                    GROUP BY class
+                            
+                """ % flight_id
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+                emptyseatsforeco = 0
+                emptyseatsforbsn = 0
+                for row in rows:
+                    if row[0] == 'E':
+                        emptyseatsforeco = row[1]
+                    elif row[0] == 'B':
+                        emptyseatsforbsn = row[1]
+
+                statement = """SELECT class, MIN(price) FROM tickets WHERE flight_id = '%s' AND username IS NULL 
+                                                    GROUP BY class
+
+                                """ % flight_id
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+                priceforeco = 0
+                priceforbsn = 0
+                for row in rows:
+                    if row[0] == 'E':
+                        priceforeco = row[1]
+                    elif row[0] == 'B':
+                        priceforbsn = row[1]
+
+                return render_template('buy_ticket.html', flightid = flight_id, balance = session['Balance'], emptyseatsforeco = emptyseatsforeco, emptyseatsforbsn =emptyseatsforbsn, priceforeco = priceforeco, priceforbsn = priceforbsn)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata!"
+            finally:
+                connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Please log in first'))
 if __name__ == "__main__":
     app.run()

@@ -9,6 +9,11 @@
 <div class="blockcontainer">
 	<div class="blockcontainer-content">
         <p>You have selected flightno: {{ flightid }} </p>
+        <p>Your balance is {{balance}}</p>
+        <p>There are {{emptyseatsforeco}} empty seats in economy class and seat price is {{priceforeco}} TL. Click to buy</p>
+        <button onclick="/economy">Buy from Economy Class</button>
+        <p>There are {{emptyseatsforbsn}} empty seats in business class and seat price is {{priceforbsn}} TL. Click to buy</p>
+        <button onclick="/business">Buy from Business Class</button>
 	</div>
 </div>
 
