@@ -57,6 +57,7 @@ INIT_STATEMENTS = [
                     ON DELETE NO ACTION
             )
     """,
+    ##-------------------SERCAN--------------------##
     """
             CREATE TABLE IF NOT EXISTS cities
                 (   city_id integer PRIMARY KEY,
@@ -107,7 +108,27 @@ INIT_STATEMENTS = [
                     ON DELETE RESTRICT
             )
     """,
+    ##-------------------SAID----------------------##
     """
+        CREATE TABLE IF NOT EXISTS tickets
+            (   
+                flight_id integer NOT NULL PRIMARY KEY,
+                ticket_id integer NOT NULL PRIMARY KEY,
+                username character varying(20),
+                price numeric(7,2) NOT NULL,
+                class character varying(1) NOT NULL,
+                seat_number character varying(3),
+                CONSTRAINT flight_id FOREIGN KEY (flight_id)
+                    REFERENCES flights (flight_id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+                CONSTRAINT username FOREIGN KEY (username)
+                    REFERENCES person (username)
+                    ON UPDATE CASCADE
+                    ON DELETE SET NULL
+            )
+    """,
+"""
         INSERT INTO users
         SELECT 'admin', 'admin' WHERE NOT EXISTS(select * from users where username='admin')
     """,
