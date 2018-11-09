@@ -12,14 +12,7 @@ app.secret_key = "secretkey123"
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
-class User:
-    def __init__(self, uname, fname, email, balance):
-        self.username = uname
-        self.fullname = fname
-        self.email = email
-        self.balance = balance
-
-
+##--------------------SERCAN YETKIN-------------------------------------------------##
 @app.route('/')
 def index():
     refreshUserData()
@@ -67,7 +60,57 @@ def searchList():
     finally:
         connection.close()
 
+@app.route("/flights")
+def flights():
 
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                        """
+            cursor.execute(statement)
+            rows = cursor.fetchall()
+
+            return render_template('flights.html', flights=rows)
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return str(e)
+        finally:
+            connection.close()
+
+@app.route('/adm_updateflight/<flight_id>', methods = ['GET', 'POST'])
+def adm_updateflight():
+    if ifAdmin():
+        if request.method == 'POST' :
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """UPDATE flights SET
+                """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+                return render_template('adm_updateflight.html', flight=rows)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata!"
+            finally:
+                connection.close()
+        else:
+            return render_template('adm_updateflight.html')
+
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+##--------------------SERCAN YETKIN-------------------------------------------------##
+
+
+
+##--------------------SELIM ENES KILICASLAN-----------------------------------------##
 @app.route("/login", methods = ['POST'])
 def login():
     _Username = request.form['username']
@@ -229,53 +272,6 @@ def adm_updateuser(username):
             connection.close()
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
-
-@app.route("/flights")
-def flights():
-
-        try:
-            connection = dbapi2.connect(dsn)
-            cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
-                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
-                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
-                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
-                            INNER JOIN cities AS c ON a.city_id = c.city_id
-                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
-                        """
-            cursor.execute(statement)
-            rows = cursor.fetchall()
-
-            return render_template('flights.html', flights=rows)
-        except dbapi2.DatabaseError as e:
-            connection.rollback()
-            return str(e)
-        finally:
-            connection.close()
-
-
-@app.route('/adm_updateflight/<flight_id>', methods = ['GET', 'POST'])
-def adm_updateflight():
-    if ifAdmin():
-        if request.method == 'POST' :
-            try:
-                connection = dbapi2.connect(dsn)
-                cursor = connection.cursor()
-                statement = """UPDATE flights SET
-                """
-                cursor.execute(statement)
-                rows = cursor.fetchall()
-                return render_template('adm_updateflight.html', flight=rows)
-            except dbapi2.DatabaseError:
-                connection.rollback()
-                return "Hata!"
-            finally:
-                connection.close()
-        else:
-            return render_template('adm_updateflight.html')
-
-    else:
-        return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 @app.route('/errorpage/<message>')
 def errorpage(message):
@@ -488,9 +484,15 @@ def forgotpassword():
         finally:
             connection.close()
 
+##--------------------SELIM ENES KILICASLAN-----------------------------------------##
+
+
+
+
+##--------------------MUHAMMED SAID DIKICI------------------------------------------##
+
 @app.route('/buy_ticket/<int:flight_id>', methods = ['GET', 'POST'])
 def buy_ticket(flight_id):
-
     if 'Username' in session:
         refreshUserData()
         if request.method == 'GET':
@@ -576,8 +578,10 @@ def buy_ticket(flight_id):
                 return str(e)
             finally:
                 connection.close()
-
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
+
+##--------------------MUHAMMED SAID DIKICI------------------------------------------##
+
 if __name__ == "__main__":
     app.run()
