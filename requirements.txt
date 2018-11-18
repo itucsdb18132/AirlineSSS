@@ -3,3 +3,5 @@ psycopg2-binary>=2.7
 gunicorn>=19.9
 flask-wtf>=0.14
 wtforms>=2.2
+flask-uploads>=0.2
+Werkzeug>=0.14
