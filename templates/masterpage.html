@@ -1,144 +1,273 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
-    <head>
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-            {% block head %}
-            <link rel="stylesheet" href="../static/styles/styles.css?version=6">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-            <link rel="icon" href="../static/images/favicon.ico" sizes="any" type="image/png">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <meta charset="UTF-8">
-            <title>{% block title %}{% endblock %} - AirlineSSS</title>
-            {% endblock %}
-    </head>
-    <body>
-        <div class="topnav" id="myTopnav">
-            <a href="{{ url_for('index') }}" class="active">Home</a>
-            <a href="{{ url_for('news') }}">News</a>
-            <a href="{{ url_for('flights') }}">Flights</a>
-            <a href="{{ url_for('about') }}">About</a>
-            {% if 'online' in session %}
-                {% if session.Role == 'A' %}
-                    <a href="{{ url_for('adminpage') }}">Admin Panel</a>
-                {% else %}
-                    <a href="{{ url_for('buycoins') }}">Buy Coins</a>
-                {% endif %}
-                <a href="{{ url_for('userpage') }}">Profile</a>
-                <a href="{{ url_for('logout') }}" class="loginbutton" style="width:auto;">Logout</a>
-            {% else %}
-                <a href="#login" onclick="document.getElementById('login_popup').style.display='block'" class="loginbutton" style="width:auto;">Login</a>
-                <a href="#register" onclick="document.getElementById('register_popup').style.display='block'" class="registerbutton" style="width:auto;">Register</a>
-            {% endif %}
-            <label name="rate">1 SCoin = 0.9 &#8378;</label>
-            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-                    <i class="fa           fa-bars"></i>
-            </a>
-        </div>
-        <div id="login_popup" class="modal">
+    <!-- Title -->
+    <title>{% block title %}{% endblock %} - AirlineSSS</title>
 
-            <form id="pop_up" class="modal-content animate" action="/login" method="post">
-                <div class="imgcontainer">
-                    <span onclick="document.getElementById('login_popup').style.display='none'" class="close" title="Close Modal">&times;</span>
-                    <img src="../static/images/popup.svg" alt="Avatar" class="avatar">
+    <!-- Favicon -->
+    <link rel="icon" href="../static/img/core-img/favicon.ico">
+
+    <!-- Core Stylesheet -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <!-- Responsive CSS -->
+    <link href="../static/css/responsive/responsive.css" rel="stylesheet">
+
+    {% endblock %}
+
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="dorne-load"></div>
+    </div>
+
+    <!-- ***** Search Form Area ***** -->
+    <div class="dorne-search-form d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="search-close-btn" id="closeBtn">
+                        <i class="pe-7s-close-circle" aria-hidden="true"></i>
+                    </div>
+                    <form action="#" method="get">
+                        <input type="search" name="caviarSearch" id="search" placeholder="Search Your Desire Destinations or Events">
+                        <input type="submit" class="d-none" value="submit">
+                    </form>
                 </div>
-
-                <div class="container">
-                    <label for="username"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="username" required>
-
-                    <label for="password"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="password" required>
-
-                    <button type="submit">Login</button>
-                    <label>
-                        <input type="checkbox" checked="checked" name="remember"> Remember me
-                    </label>
-                </div>
-
-                <div class="container" style="background-color:#f1f1f1">
-                  <span class="psw">Forgot <a href="{{ url_for('forgotpassword') }}">password?</a></span>
-                </div>
-            </form>
-        </div>
-
-        <div id="register_popup" class="modal">
-
-            <form class="modal-content animate" action="/register" method="post">
-                <div class="imgcontainer">
-                    <span onclick="document.getElementById('register_popup').style.display='none'" class="close" title="Close Modal">&times;</span>
-                    <img src="../static/images/popup.svg" alt="Avatar" class="avatar">
-                </div>
-                <div class="container">
-                    <label for="username"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="username" required>
-
-                    <label for="name"><b>Name</b></label>
-                    <input type="text" placeholder="Enter Your Name" name="name" required>
-
-                    <label for="email"><b>E-Mail Address</b></label>
-                    <input type="text" placeholder="Enter Password" name="email" required>
-
-                    <label for="password"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="password" required>
-
-                    <button type="submit">Register</button>
-                </div>
-
-            </form>
-        </div>
-        {% block content%}{% endblock %}
-
-
-    </body>
-    <footer>
-        <!-- Modal -->
-        <div id="messageBox" class="message" role="dialog">
-          <div class="message-dialog">
-            <!-- Modal content-->
-            <div class="message-content">
-              <div class="message-header">
-                <button type="button" class="close" onclick="document.getElementById('messageBox').style.display='none'">&times;</button>
-                <h4 class="message-title">Message</h4>
-              </div>
-              <div class="message-body">
-                        {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-              </div>
-              <div class="message-footer">
-              </div>
             </div>
-
-          </div>
         </div>
-    </footer>
-<script>
-function myFunction() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav";
-    }
-}
-$(document).ready(function() {
-    var messages = "{{ get_flashed_messages() }}";
+    </div>
 
-    if (typeof messages != 'undefined' && messages != '[]') {
-        $("#messageBox").modal();
-    };
-});
-</script>
+    <!-- ***** Header Area Start ***** -->
+    <header class="header_area" id="header">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col-12 h-100">
+                    <nav id="navBar" class="h-100 navbar navbar-expand-lg">
+                        <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/img/core-img/logo.png" alt=""></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#dorneNav" aria-controls="dorneNav" aria-expanded="false" aria-label="Toggle navigation"><span class="fa fa-bars"></span></button>
+                        <!-- Nav -->
+                        <div class="collapse navbar-collapse" id="dorneNav">
+                            <ul class="navbar-nav mr-auto" id="dorneMenu">
+                                <li class="nav-item {{ homeActive }}">
+                                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                                </li>
+                                <li class="nav-item {{ newsActive }}">
+                                    <a class="nav-link" href="{{ url_for('news') }}">News</a>
+                                </li>
+                                <li class="nav-item {{ flightsActive }}">
+                                    <a class="nav-link" href="{{ url_for('flights') }}">Flights</a>
+                                </li>
+                                <li class="nav-item {{ aboutActive }}">
+                                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                                </li>
+                                {% if 'online' in session %}
+                                    {% if session.Role == 'A' %}
+                                        <li class="nav-item {{ adminActive }}">
+                                            <a class="nav-link" href="{{ url_for('adminpage') }}">Admin Page</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="nav-item {{ coinActive }}">
+                                            <a class="nav-link" href="{{ url_for('buycoins') }}">Buy Coins</a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="nav-item {{ profileActive }}">
+                                        <a class="nav-link" href="{{ url_for('userpage') }}">Profile</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+
+                            <div class="dorne-search-btn">
+                                <a id="search-btn" href="#"><i class="fa fa-search" aria-hidden="true"></i> Search</a>
+                            </div>
+
+                            {% if 'online' not in session %}
+                                <div class="dorne-add-listings-btn">
+                                    <a href="#lrModal" data-toggle="modal" class="btn dorne-btn">Sign in  or Register</a>
+                                </div>
+                            {% else %}
+                                <div>
+                                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+	<section>
+
+        <div class="modal fade" id="lrModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="login-tab" data-toggle="tab" href="#loginTab" role="tab" aria-controls="loginTab" aria-selected="true">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#registerTab" role="tab" aria-controls="registerTab" aria-selected="false">Register</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <br>
+                                <div class="tab-pane fade show active" id="loginTab" role="tabpanel" aria-labelledby="login-tab">
+                                    <form action="{{ url_for('login') }}" method="post" id="Login">
+
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                </div>
+                                                <input id="username" type="text" class="form-control" name="username" placeholder="Username" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                </div>
+                                                <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <button type="submit" class="btn dorne-btn btn-block">Login</button>
+
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade show" id="registerTab" role="tabpanel" aria-labelledby="register-tab">
+
+                                    <form action="/register" method="post">
+                                        <div class="form-group">
+                                            {{ registerForm.csrf_token }}
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-italic"></i></span>
+                                                </div>
+                                                {{ registerForm.name(class='form-control') }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                </div>
+                                                {{ registerForm.username(class='form-control') }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-envelope"></i></span>
+                                                </div>
+                                                {{ registerForm.email(class='form-control') }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                </div>
+                                                {{ registerForm.password(class='form-control') }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                </div>
+                                                {{ registerForm.confirm(class='form-control') }}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <button type="submit" class="btn dorne-btn btn-block">Register</button>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="links">
+                                <p class="text-right"><a href="{{ url_for('forgotpassword') }}">Forgot password?</a></p>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	{% block content %}
+    {% endblock %}
+	
+    <div class="fixed-bottom">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+	<!-- ****** Footer Area Start ****** -->
+	<footer class="dorne-footer-area">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12 d-md-flex align-items-center justify-content-between">
+					<div class="footer-text">
+						<p>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+						</p>
+					</div>
+					<div class="footer-social-btns">
+						<a href="#"><i class="fab fa-linkedin" aria-haspopup="true"></i></a>
+						<a href="#"><i class="fab fa-behance" aria-hidden="true"></i></a>
+						<a href="#"><i class="fab fa-dribbble" aria-hidden="true"></i></a>
+						<a href="#"><i class="fab fa-twitter" aria-haspopup="true"></i></a>
+						<a href="#"><i class="fab fa-facebook" aria-haspopup="true"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <!-- ****** Footer Area End ****** -->
+
+    <!-- jQuery-2.2.4 js -->
+    <script src="../static/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="../static/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap-4 js -->
+    <script src="../static/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="../static/js/others/plugins.js"></script>
+    <!-- Active JS -->
+    <script src="../static/js/active.js?version=2"></script>
+</body>
+
 </html>
-
-
-
-
-

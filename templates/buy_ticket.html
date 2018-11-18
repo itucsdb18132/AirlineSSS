@@ -8,6 +8,7 @@
 
 <div class="blockcontainer">
 	<div class="blockcontainer-content">
+        {{ super() }}
         <p>You have selected flightno: {{ flightid }} </p>
         {% if emptyseatsforeco != 0 or emptyseatsforbsn != 0 %}
         <p>Your balance is {{balance}}</p>
@@ -30,7 +31,6 @@
         {% else %}
         <p>There are no empty seats for this flight</p>
         {% endif %}
-
 	</div>
 </div>
 

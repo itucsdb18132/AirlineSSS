@@ -7,6 +7,7 @@
 {% block content %}
 <div class="blockcontainer">
     <div class="blockcontainer-content">
+        {{ super() }}
         <p>Welcome, {{ session.Fullname }}!<br>
             View user <a class="awhite" href="{{ url_for('adm_users') }}">list</a><br>
         </p>

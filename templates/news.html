@@ -2,63 +2,56 @@
 {% extends "masterpage.html" %}
 {% block head %}
   {{ super() }}
-    <link rel="stylesheet" href="../static/styles/posts.css?version=3">
 {% endblock %}
 {% block title %} News {% endblock %}
 {% block content %}
-<div>
-    {% if posts %}
-        {% for post in posts %}
-            <div class="blockcontainer">
-                <div class="blockcontainer-content">
-                    <div class="post post-container">
-                        <table border="1">
-                            <tr>
-                                <td class="post post-left" style="backgroud-color:gray">
-                                    <div>
-                                        <table border="1">
-                                            <tr class="post profile-top">
-                                                <td>
-                                                    <table border="1">
-                                                        <tr>
-                                                            <td>
-                                                                <img class="profile-image" src="../static/images/usericon.png">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>{{ post[1] }}</td>
-
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr class="post profile-bottom">
-                                                <td>Username: {{ post[2] }}<br>User Role: {{ post[6] }}</td>
-                                            </tr>
-                                    </table>
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+        <div class="container">
+        {{ super() }}
+        {% if posts %}
+            {% for post in posts %}
+                <div class="row post-row" id="{{ post[0] }}">
+                    <div class="col-sm-12 my-2">
+                        <div class="card card-body bg-light">
+                            <div class="media">
+                                <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <a href="#">
+                                            <img class="align-self-start mr-3 post-picture" src="../static/img/uploads/{{ post[7] }}" height="200" width="200">
+                                        </a>
                                     </div>
-                                </td>
-                                <td class="post post-right">
-                                    <div>
-                                        <table border="1">
-                                            <tr class="post-content-top">
-                                                <td>{{post[3]}}</td>
-                                            </tr>
-                                            <tr class="post-content-bottom">
-                                                <td>Post ID: {{ post[0] }} Date: {{ post[4] }} Time: {{ post[5] }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                                    <div class="col-md-9">
+                                        <div class="media-body">
+                                            <h4 class="mt-0 text-left">{{ post[6] }}</h4>
+                                            <p class="text-right text-lg mb-0">By {{ post[1] }}</p>
+                                            <p class="text-right text-lg mt-0">User Role: {{ post[5] }}</p>
 
+                                            <p>{{ post[2] }}</p>
+                                            <ul class="list-inline list-unstyled">
+                                                <li class="list-inline-item"><span><i class="fas fa-hashtag"></i> Post ID: {{ post[0] }} </span></li>
+                                                <li class="list-inline-item"><span><i class="far fa-calendar-alt"></i> {{ post[3] }} </span></li>
+                                                <li class="list-inline-item"><span><i class="far fa-clock"></i> {{ post[4] }} </span></li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No Posts!</p>
-    {% endif %}
+
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>No Posts!</p>
+        {% endif %}
+
+    </div>
 </div>
+
+
 {% endblock %}

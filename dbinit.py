@@ -34,6 +34,8 @@ INIT_STATEMENTS = [
                 content character varying(400) NOT NULL,
                 date date,
                 "time" time without time zone,
+                title character varying(50) NOT NULL,
+                image character varying(20) NOT NULL,
                 CONSTRAINT posts_fkey FOREIGN KEY (poster)
                     REFERENCES users (username)
                     ON UPDATE CASCADE

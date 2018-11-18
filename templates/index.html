@@ -1,48 +1,335 @@
-
 {% extends "masterpage.html" %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block title %} Home {% endblock %}
-{% block content %}
-<div class="blockcontainer">
-  <div class="blockcontainer-content">
-    <p>Search flights</p>
-<form action="/searchList" method="post">
-   <table>
-        <tr>
-            <th>From</th>
-            <th>To</th>
-        </tr>
-        <tr>
-            <td>
-                <select name="from">
-                    {% for city in cities %}
-                     <option value="{{city[0]}}">{{city[0]}}</option>
-                    {% endfor %}
-                </select>
-             </td>
-             <td>
-                <select name="to">
-                    {% for city in cities %}
-                     <option value="{{city[0]}}">{{city[0]}}</option>
-                    {% endfor %}
-                 </select>
-              </td>
-             <td>
-                 <input type="date" name="date"
-                     value="{{ date }}"
-                     min="{{ date }}" >
-             </td>
 
-              <td>
-                  <button type="submit">SEARCH</button>
-              </td>
-        </tr>
-   </table>
-</form>
 
-  </div>
-</div>
+	{% block content %}
+	<!-- ***** Welcome Area Start ***** -->
+	<section id="welcome" class="dorne-welcome-area bg-img bg-overlay" style="background-image: url(../static/img/bg-img/airport2.jpg);">
+		<div class="container h-100">
+			<div class="row h-100 align-items-center justify-content-center">
+				<div class="col-12 col-md-10">
+					<div class="hero-content">
+						<h2>Find your ticket</h2>
+						<h4>For the best flight experience</h4>
+					</div>
+					<!-- Hero Search Form -->
+					<div class="hero-search-form">
+						<!-- Tabs -->
+						<div class="nav nav-tabs" id="heroTab" role="tablist">
+							<a class="nav-item nav-link active" id="nav-places-tab" data-toggle="tab" href="#nav-places" role="tab" aria-controls="nav-places" aria-selected="true">Places</a>
+							<a class="nav-item nav-link" id="nav-events-tab" data-toggle="tab" href="#nav-events" role="tab" aria-controls="nav-events" aria-selected="false">Events</a>
+						</div>
+						<!-- Tabs Content -->
+						<div class="tab-content" id="nav-tabContent">
+							<div class="tab-pane fade show active" id="nav-places" role="tabpanel" aria-labelledby="nav-places-tab">
+								<h6>What are you looking for?</h6>
+								<form action="/searchList" method="post">
+									<select class="custom-select" name="from">
+										<option selected>Istanbul (Any)</option>
+										{% for city in cities %}
+											<option value="{{city[0]}}">{{city[0]}}</option>
+										{% endfor %}
+									</select>
+									<select class="custom-select" name="to">
+										<option selected>All Destinations</option>
+										{% for city in cities %}
+											<option value="{{city[0]}}">{{city[0]}}</option>
+										{% endfor %}
+									</select> 
+									
+									<input type="date" class="custom-date" name="date" value="{{ date }}" min="{{ date }}" >
+									
+									<button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Search</button>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="nav-events" role="tabpanel" aria-labelledby="nav-events-tab">
+								<h6>What are you looking for?</h6>
+								<form action="#" method="get">
+									<select class="custom-select">
+										<option selected>Your Destinations</option>
+										<option value="1">New York</option>
+										<option value="2">Latvia</option>
+										<option value="3">Dhaka</option>
+										<option value="4">Melbourne</option>
+										<option value="5">London</option>
+									</select>
+									<select class="custom-select">
+										<option selected>All Catagories</option>
+										<option value="1">Catagories 1</option>
+										<option value="2">Catagories 2</option>
+										<option value="3">Catagories 3</option>
+									</select>
+									<select class="custom-select">
+										<option selected>Price Range</option>
+										<option value="1">$100 - $499</option>
+										<option value="2">$500 - $999</option>
+										<option value="3">$1000 - $4999</option>
+									</select>
+									<button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Search</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Hero Social Btn -->
+		<div class="hero-social-btn">
+			<div class="social-title d-flex align-items-center">
+				<h6>Follow us on Social Media</h6>
+				<span></span>
+			</div>
+			<div class="social-btns">
+				<a href="#"><i class="fab fa-linkedin" aria-haspopup="true"></i></a>
+				<a href="#"><i class="fab fa-behance" aria-hidden="true"></i></a>
+				<a href="#"><i class="fab fa-dribbble" aria-hidden="true"></i></a>
+				<a href="#"><i class="fab fa-twitter" aria-haspopup="true"></i></a>
+				<a href="#"><i class="fab fa-facebook" aria-haspopup="true"></i></a>
+			</div>
+		</div>
+		
+	</section>
+	<!-- ***** Welcome Area End ***** -->
 
-{% endblock %}
+	<!-- ***** Catagory Area Start ***** -->
+	<section id="about" class="dorne-catagory-area">
+		<div class="container">
+			{{ super() }}
+			<div class="row">
+				<div class="col-12">
+					<div class="all-catagories">
+						<div class="row">
+							<!-- Single Catagory Area -->
+							<div class="col-12 col-sm-6 col-md">
+								<div class="single-catagory-area wow fadeInUpBig" data-wow-delay="0.2s">
+									<div class="catagory-content">
+										<img src="../static/img/core-img/icon-1.png" alt="">
+										<a href="#">
+											<h6>Hotels</h6>
+										</a>
+									</div>
+								</div>
+							</div>
+							<!-- Single Catagory Area -->
+							<div class="col-12 col-sm-6 col-md">
+								<div class="single-catagory-area wow fadeInUpBig" data-wow-delay="0.4s">
+									<div class="catagory-content">
+										<img src="../static/img/core-img/icon-2.png" alt="">
+										<a href="#">
+											<h6>Restaurants</h6>
+										</a>
+									</div>
+								</div>
+							</div>
+							<!-- Single Catagory Area -->
+							<div class="col-12 col-sm-6 col-md">
+								<div class="single-catagory-area wow fadeInUpBig" data-wow-delay="0.6s">
+									<div class="catagory-content">
+										<img src="../static/img/core-img/icon-3.png" alt="">
+										<a href="#">
+											<h6>Shopping</h6>
+										</a>
+									</div>
+								</div>
+							</div>
+							<!-- Single Catagory Area -->
+							<div class="col-12 col-sm-6 col-md">
+								<div class="single-catagory-area wow fadeInUpBig" data-wow-delay="0.8s">
+									<div class="catagory-content">
+										<img src="../static/img/core-img/icon-4.png" alt="">
+										<a href="#">
+											<h6>Beauty &amp; Spa</h6>
+										</a>
+									</div>
+								</div>
+							</div>
+							<!-- Single Catagory Area -->
+							<div class="col-12 col-md">
+								<div class="single-catagory-area wow fadeInUpBig" data-wow-delay="1s">
+									<div class="catagory-content">
+										<img src="../static/img/core-img/icon-5.png" alt="">
+										<a href="#">
+											<h6>Cinema</h6>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- ***** Catagory Area End ***** -->
+
+	<!-- ***** About Area Start ***** -->
+	<section class="dorne-about-area section-padding-0-100">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="about-content text-center">
+						<h2>Discover your country with <br><span>AirlineSSS</span></h2>
+						<p>1<sup>st</sup> Airline Company of 2017.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- ***** About Area End ***** -->
+
+	<!-- ***** Features Destinations Area Start ***** -->
+	<section id="editorpick" class="dorne-features-destinations-area dorne-editors-pick-area bg-img bg-overlay-9 section-padding-100" style="background-image: url(../static/img/bg-img/hero-2.jpg)">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="section-heading text-center">
+						<span></span>
+						<h4>Featured destinations</h4>
+						<p>Editor’s pick</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12">
+					<div class="features-slides owl-carousel">
+						<!-- Single Features Area -->
+						<div class="single-features-area">
+							<img src="../static/img/bg-img/feature-1.jpg" alt="">
+							<!-- Price -->
+							<div class="price-start">
+								<p>FROM $59/night</p>
+							</div>
+							<div class="feature-content d-flex align-items-center justify-content-between">
+								<div class="feature-title">
+									<h5>Ibiza</h5>
+									<p>Party</p>
+								</div>
+								<div class="feature-favourite">
+									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+						<!-- Single Features Area -->
+						<div class="single-features-area">
+							<img src="../static/img/bg-img/feature-2.jpg" alt="">
+							<!-- Price -->
+							<div class="price-start">
+								<p>FROM $59/night</p>
+							</div>
+							<div class="feature-content d-flex align-items-center justify-content-between">
+								<div class="feature-title">
+									<h5>Paris</h5>
+									<p>Luxury</p>
+								</div>
+								<div class="feature-favourite">
+									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+						<!-- Single Features Area -->
+						<div class="single-features-area">
+							<img src="../static/img/bg-img/feature-3.jpg" alt="">
+							<!-- Price -->
+							<div class="price-start">
+								<p>FROM $59/night</p>
+							</div>
+							<div class="feature-content d-flex align-items-center justify-content-between">
+								<div class="feature-title">
+									<h5>Lake Como</h5>
+									<p>Spectacular</p>
+								</div>
+								<div class="feature-favourite">
+									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+						<!-- Single Features Area -->
+						<div class="single-features-area">
+							<img src="../static/img/bg-img/feature-4.jpg" alt="">
+							<!-- Price -->
+							<div class="price-start">
+								<p>FROM $59/night</p>
+							</div>
+							<div class="feature-content d-flex align-items-center justify-content-between">
+								<div class="feature-title">
+									<h5>Greece</h5>
+									<p>Sunny</p>
+								</div>
+								<div class="feature-favourite">
+									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+						<!-- Single Features Area -->
+						<div class="single-features-area">
+							<img src="../static/img/bg-img/feature-5.jpg" alt="">
+							<!-- Price -->
+							<div class="price-start">
+								<p>FROM $59/night</p>
+							</div>
+							<div class="feature-content d-flex align-items-center justify-content-between">
+								<div class="feature-title">
+									<h5>Norway</h5>
+									<p>All Year round</p>
+								</div>
+								<div class="feature-favourite">
+									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- ***** Features Destinations Area End ***** -->
+
+	<!-- ***** Features Events Area Start ***** -->
+	<section class="dorne-features-events-area bg-img bg-overlay-9 section-padding-100-50" style="background-image: url(../static/img/bg-img/hero-3.jpg)">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="section-heading text-center">
+						<span></span>
+						<h4>Featured events</h4>
+						<p>Editor’s pick</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				{% if posts %}
+					{% for post in posts %}
+						<div class="col-12 col-lg-6">
+							<div class="single-feature-events-area d-sm-flex align-items-center wow fadeInUpBig" data-wow-delay="0.{{ 2 * loop.index }}s">
+								<div class="feature-events-thumb">
+									<img src="../static/img/uploads/{{ post[5] }}" alt="">
+									<div class="date-map-area d-flex">
+										<a href="#">{{ post[3] }}</a>
+									</div>
+								</div>
+								<div class="feature-events-content">
+									<h5>{{ post[4] }}</h5>
+									<h6>{{ post[1] }}</h6>
+									{% if post[2]|length > 70 %}
+										<p>{{ post[2][0:70] }}...</p>
+									{% else %}
+										<p>{{ post[2] }}</p>
+									{% endif %}
+								</div>
+								<div class="feature-events-details-btn">
+									<a href="/news#{{ post[0] }}">{{ post[0] }}</a>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+
+			</div>
+		</div>
+	</section>
+	{% endblock %}

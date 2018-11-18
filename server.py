@@ -1,13 +1,21 @@
-from flask import Flask, redirect, url_for, request, render_template, session, flash
+import os
+from flask import Flask, redirect, url_for, request, render_template, session, flash, send_from_directory
 import psycopg2 as dbapi2
 import datetime
 import mailsender
 import decimal
+from forms import formSendPost, formForgotPass, formRegister, formLogin
+from werkzeug.utils import secure_filename
+
+
 
 
 app = Flask(__name__)
 app.debug = True
 app.secret_key = "secretkey123"
+WTF_CSRF_SECRET_KEY = 'secretkey123'
+
+
 
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
@@ -25,9 +33,15 @@ def index():
                         ORDER BY city
                     """
         cursor.execute(statement)
-        rows = cursor.fetchall()
+        cities = cursor.fetchall()
 
-        return render_template('index.html', cities=rows, date=date)
+        statement = """SELECT postid, poster, content, date, title, image FROM posts
+                        ORDER BY postid DESC
+                        LIMIT 6
+                    """
+        cursor.execute(statement)
+        posts = cursor
+        return RenderTemplate('index.html', cities=cities, date=date, homeActive='active', posts=posts)
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
@@ -53,7 +67,7 @@ def searchList():
         cursor.execute(statement, (departure, destination, departure_time))
         rows = cursor.fetchall()
 
-        return render_template('flights.html', flights=rows)
+        return RenderTemplate('flights.html', flights=rows, flightsActive='active')
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
@@ -76,7 +90,7 @@ def flights():
             cursor.execute(statement)
             rows = cursor.fetchall()
 
-            return render_template('flights.html', flights=rows)
+            return RenderTemplate('flights.html', flights=rows, flightsActive='active')
         except dbapi2.DatabaseError as e:
             connection.rollback()
             return str(e)
@@ -94,14 +108,14 @@ def adm_updateflight():
                 """
                 cursor.execute(statement)
                 rows = cursor.fetchall()
-                return render_template('adm_updateflight.html', flight=rows)
+                return RenderTemplate('adm_updateflight.html', flight=rows, adminActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
                 return "Hata!"
             finally:
                 connection.close()
         else:
-            return render_template('adm_updateflight.html')
+            return RenderTemplate('adm_updateflight.html', adminActive='active')
 
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
@@ -111,6 +125,11 @@ def adm_updateflight():
 
 
 ##--------------------SELIM ENES KILICASLAN-----------------------------------------##
+
+def RenderTemplate(template, **context):
+    context['registerForm'] = formRegister()
+    return render_template(template, **context)
+
 @app.route("/login", methods = ['POST'])
 def login():
     _Username = request.form['username']
@@ -118,7 +137,7 @@ def login():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT * FROM users WHERE username = '%s'
+        statement = """SELECT * FROM users WHERE username = '%s'  
         """ % _Username
         cursor.execute(statement)
         if cursor.rowcount > 0:
@@ -147,38 +166,43 @@ def login():
 
 @app.route("/register", methods = ['POST'])
 def register():
-    _Username = request.form['username']
-    _Password = request.form['password']
-    _Fullname = request.form['name']
-    _Email    = request.form['email']
-    connection = dbapi2.connect(dsn)
-    cursor = connection.cursor()
-    statement = """SELECT * FROM users WHERE username = '%s'
-    """ % _Username
-    cursor.execute(statement)
-    if cursor.rowcount > 0:
-        return redirect(url_for('errorpage', message = 'This username already exists!'))
+    form = formRegister()
+    _Username = form.username.data
+    _Password = form.password.data
+    _Fullname = form.name.data
+    _Email    = form.email.data
+    if form.validate_on_submit():
+        connection = dbapi2.connect(dsn)
+        cursor = connection.cursor()
+        statement = """SELECT * FROM users WHERE username = '%s'
+        """ % _Username
+        cursor.execute(statement)
+        if cursor.rowcount > 0:
+            return redirect(url_for('errorpage', message = 'This username already exists!'))
 
-    statement = """INSERT INTO users (username, password) VALUES (%s, %s)
-    """
-    cursor.execute(statement, (_Username, _Password))
-    statement = """INSERT INTO person (username, fullname, emailaddress, userrole) VALUES (%s, %s, %s, %s)
-    """
-    cursor.execute(statement, (_Username, _Fullname, _Email, 'P'))
-    connection.commit()
-    session['online']   = 1
-    session['Username'] = _Username
-    session['Fullname'] = _Fullname
-    session['Email'] = _Email
-    session['Balance'] = 0
-    flash('You have been succesfully registered.')
-    return redirect(url_for('userpage'))
+        statement = """INSERT INTO users (username, password) VALUES (%s, %s)
+        """
+        cursor.execute(statement, (_Username, _Password))
+        statement = """INSERT INTO person (username, fullname, emailaddress, userrole) VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(statement, (_Username, _Fullname, _Email, 'P'))
+        connection.commit()
+        session['online']   = 1
+        session['Username'] = _Username
+        session['Fullname'] = _Fullname
+        session['Email'] = _Email
+        session['Balance'] = 0
+        flash('You have been succesfully registered.')
+        return redirect(url_for('userpage'))
+    for error in form.errors:
+        flash(form.errors[error][0])
+    return redirect(url_for('index'))
 
 @app.route("/userpage/")
 def userpage():
     if 'online' in session:
         refreshUserData()
-        return render_template('userpage.html')
+        return RenderTemplate('userpage.html', profileActive='active')
     else:
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
@@ -193,7 +217,7 @@ def logout():
 @app.route("/adminpage")
 def adminpage():
     if ifAdmin():
-        return render_template('adminpage.html')
+        return RenderTemplate('adminpage.html', adminActive='active')
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
@@ -208,7 +232,7 @@ def adm_users():
             """ % username
             cursor.execute(statement)
             rows = cursor.fetchall()
-            return render_template('adm_users.html', userlist = rows)
+            return RenderTemplate('adm_users.html', userlist = rows, adminActive='active')
         except dbapi2.DatabaseError as e:
             connection.rollback()
             return e
@@ -227,7 +251,7 @@ def updateuser(username):
             """ % username
             cursor.execute(statement)
             row = cursor.fetchone()
-            return render_template('adm_updateuser.html', user = row)
+            return RenderTemplate('adm_updateuser.html', user = row, adminActive='active')
         except dbapi2.DatabaseError as e:
             connection.rollback()
             return e
@@ -275,11 +299,11 @@ def adm_updateuser(username):
 
 @app.route('/errorpage/<message>')
 def errorpage(message):
-    return  render_template('errorpage.html', message = message)
+    return  RenderTemplate('errorpage.html', message = message)
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return RenderTemplate('about.html', aboutActive='active')
 
 def ifAdmin():
     if 'Username' in session:
@@ -327,7 +351,7 @@ def deleteuser(username):
             cursor.execute(statement)
             connection.commit()
             flash('You have succesfully deleted a user.')
-            return render_template('adm_users.html')
+            return RenderTemplate('adm_users.html', adminActive='active')
         except dbapi2.DatabaseError:
             connection.rollback()
             return "Hata!"
@@ -340,46 +364,82 @@ def deleteuser(username):
 def news():
     connection = dbapi2.connect(dsn)
     cursor = connection.cursor()
-    statement = """SELECT p.postid, f.fullname, p.poster, p.content, p.date, p.time, f.userrole FROM posts as p
+    statement = """SELECT p.postid, f.fullname, p.content, p.date, p.time, f.userrole, p.title, p.image FROM posts as p
                 LEFT OUTER JOIN person as f ON f.username = p.poster 
                 ORDER BY p.postid DESC
     """
     cursor.execute(statement)
     posts = cursor.fetchall()
-    return render_template('news.html', posts = posts)
+    return RenderTemplate('news.html', posts = posts, newsActive='active')
 
 @app.route('/sendpost', methods = ['post'])
 def sendpost():
     refreshUserData()
     if ifAdmin():
-        _Datetime = datetime.datetime.now()
-        poster = session['Username']
-        content = request.form['content']
-        date = _Datetime.strftime("%d/%m/%Y")
-        time = _Datetime.strftime("%H:%M")
-        connection = dbapi2.connect(dsn)
-        cursor = connection.cursor()
-        statement = """INSERT INTO posts (poster, content, date, time) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s)
-        """
-        cursor.execute(statement, (poster, content, date, time))
-        connection.commit()
-        flash('You have succesfully posted an entry.')
+        form = formSendPost()
+        if form.validate_on_submit():
+
+            image = form.image.data
+            filename = secure_filename(image.filename)
+            image.save(os.path.join('./static/img/uploads', filename))
+
+            _Datetime = datetime.datetime.now()
+            poster = session['Username']
+            content = form.content.data
+            title = form.title.data
+            date = _Datetime.strftime("%d/%m/%Y")
+            time = _Datetime.strftime("%H:%M")
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            statement = """INSERT INTO posts (poster, content, date, time, title, image) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s, %s, %s)
+                        """
+            cursor.execute(statement, (poster, content, date, time, title, filename))
+            connection.commit()
+            flash('You have succesfully posted an entry.')
+            return redirect(url_for('test'))
+        for key in form.errors:
+            flash(form.errors[key][0])
+
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
     return redirect(url_for('news'))
 
-@app.route('/adm_sendpost')
+@app.route('/adm_sendpost', methods = ['GET', 'POST'])
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
-        return render_template('adm_sendpost.html')
+        form = formSendPost()
+        if(request.method == 'POST'):
+            if form.validate_on_submit():
+                image = form.image.data
+                filename = secure_filename(image.filename)
+                image.save(os.path.join('./static/img/uploads', filename))
+
+                _Datetime = datetime.datetime.now()
+                poster = session['Username']
+                content = form.content.data
+                title = form.title.data
+                date = _Datetime.strftime("%d/%m/%Y")
+                time = _Datetime.strftime("%H:%M")
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """INSERT INTO posts (poster, content, date, time, title, image) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s, %s, %s)
+                            """
+                cursor.execute(statement, (poster, content, date, time, title, filename))
+                connection.commit()
+                flash('You have succesfully posted an entry.')
+                return redirect(url_for('news'))
+            for key in form.errors:
+                flash(form.errors[key][0])
+
+        return RenderTemplate('adm_sendpost.html', adminActive='active', form=form)
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 @app.route('/buycoins', methods=['GET', 'POST'])
 def buycoins():
     if request.method == 'GET':
-        return render_template('buycoins.html')
+        return RenderTemplate('buycoins.html', coinActive='active')
     elif request.method == 'POST':
         amount = request.form['amount']
         refreshUserData()
@@ -411,13 +471,13 @@ def adm_pymreqs():
                 """
                 cursor.execute(statement)
                 payments = cursor.fetchall()
-                return render_template('adm_pymreqs.html', payments = payments)
+                return RenderTemplate('adm_pymreqs.html', payments = payments, adminActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
                 return "Hata!"
             finally:
                 connection.close()
-            return render_template('adm_pymreqs.html')
+            return RenderTemplate('adm_pymreqs.html', adminActive='active')
         elif request.method == 'POST':
             try:
                 for key in request.form.keys():
@@ -454,35 +514,40 @@ def adm_pymreqs():
 
 @app.route('/forgotpassword', methods=['GET', 'POST'])
 def forgotpassword():
+    form = formForgotPass()
     refreshUserData()
     if 'Username' in session:
         return redirect(url_for('errorpage'), message = 'Not allowed!')
     if request.method == 'GET':
-        return render_template('forgotpassword.html')
+        return RenderTemplate('forgotpassword.html', form=form)
     else:
-        username = request.form['username']
-        refreshUserData()
-        try:
-            connection = dbapi2.connect(dsn)
-            cursor = connection.cursor()
-            statement = """SELECT p.emailaddress, u.password FROM person AS p
-                                INNER JOIN users AS u ON u.username = p.username
-                                WHERE p.username = '%s'
-            """ % username
-            cursor.execute(statement)
-            row = cursor.fetchone()
-            if row:
-                mailsender.sendMail(row[1], row[0])
-                flash('Your password has been sent to your email address. Please check your inbox.')
-                return redirect(url_for('forgotpassword'))
-            else:
-                flash('This username is not registered to our website!')
-                return redirect(url_for('forgotpassword'))
-        except dbapi2.DatabaseError as e:
-            connection.rollback()
-            return str(e)
-        finally:
-            connection.close()
+        if form.validate_on_submit():
+            username = form.username.data
+            refreshUserData()
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT p.emailaddress, u.password FROM person AS p
+                                    INNER JOIN users AS u ON u.username = p.username
+                                    WHERE p.username = '%s'
+                """ % username
+                cursor.execute(statement)
+                row = cursor.fetchone()
+                if row:
+                    mailsender.sendMail(row[1], row[0])
+                    flash('Your password has been sent to your email address. Please check your inbox.')
+                    return RenderTemplate('forgotpassword.html', form=form)
+                else:
+                    flash('This username is not registered to our website!')
+                    return RenderTemplate('forgotpassword.html', form=form)
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+        for error in form.errors:
+            flash(form.errors[error][0])
+        return RenderTemplate('forgotpassword.html', form=form)
 
 ##--------------------SELIM ENES KILICASLAN-----------------------------------------##
 
@@ -527,7 +592,7 @@ def buy_ticket(flight_id):
                     elif row[0] == 'B':
                         priceforbsn = row[1]
 
-                return render_template('buy_ticket.html', flightid = flight_id, balance = session['Balance'], emptyseatsforeco = emptyseatsforeco, emptyseatsforbsn =emptyseatsforbsn, priceforeco = priceforeco, priceforbsn = priceforbsn)
+                return RenderTemplate('buy_ticket.html', flightid = flight_id, balance = session['Balance'], emptyseatsforeco = emptyseatsforeco, emptyseatsforbsn =emptyseatsforbsn, priceforeco = priceforeco, priceforbsn = priceforbsn, flightsActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
                 return "Hata!"

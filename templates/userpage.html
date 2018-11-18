@@ -7,6 +7,7 @@
 {% block content %}
 <div class="blockcontainer">
     <div class="blockcontainer-content">
+        {{ super() }}
         <p>Welcome, {{ session.Fullname }}!<br>
             Your balance is {{ session.Balance }} SCoins</p>
     </div>

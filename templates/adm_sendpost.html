@@ -7,16 +7,40 @@
 {% block content %}
 <div class="blockcontainer">
     <div class="blockcontainer-content">
-        <form action="/sendpost" method="post">
-            <table>
-                <tr>
-                    <td><textarea rows="5" cols="100" name="content" placeholder="Enter something..."></textarea></td>
-                </tr>
-                <tr>
-                    <td><button type="submit">POST</button></td>
-                </tr>
-            </table>
-        </form>
+        <div class="container">
+            {{ super() }}
+            <form action="/adm_sendpost" method="post" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {{ form.title.label }}
+                                {{ form.title(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form.image.label }}
+                                {{ form.image(class='form-control-file') }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {{ form.content.label }}
+                                {{ form.content(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="submit"></label>
+                            <button type="submit" name="submit" class="btn dorne-btn btn-block">Send Post</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
