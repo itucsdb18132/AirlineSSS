@@ -6,9 +6,7 @@ import mailsender
 import decimal
 from forms import formSendPost, formForgotPass, formRegister, formLogin
 from werkzeug.utils import secure_filename
-
-
-
+from base64 import b64encode, b64decode
 
 app = Flask(__name__)
 app.debug = True
@@ -35,13 +33,18 @@ def index():
         cursor.execute(statement)
         cities = cursor.fetchall()
 
-        statement = """SELECT postid, poster, content, date, title, image FROM posts
+        statement = """SELECT postid, fullname, content, date, title, img.data, img.filename FROM posts
+                        INNER JOIN person ON poster = username
+                        LEFT OUTER JOIN uploads as img ON posts.image = img.id
                         ORDER BY postid DESC
                         LIMIT 6
                     """
         cursor.execute(statement)
-        posts = cursor
-        return RenderTemplate('index.html', cities=cities, date=date, homeActive='active', posts=posts)
+        posts = cursor.fetchall()
+        images = {}
+        for post in posts:
+            images[post[0]] = b64encode(post[5]).decode('utf-8')
+        return RenderTemplate('index.html', cities=cities, date=date, homeActive='active', posts=posts, images=images)
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
@@ -125,6 +128,16 @@ def adm_updateflight():
 
 
 ##--------------------SELIM ENES KILICASLAN-----------------------------------------##
+
+@app.route('/test/<id>')
+def test(id):
+    connection = dbapi2.connect(dsn)
+    cursor = connection.cursor()
+    statement = """SELECT data FROM uploads WHERE id=%s
+    """ % id
+    cursor.execute(statement)
+    data = cursor.fetchone()
+    return str(data[0])
 
 def RenderTemplate(template, **context):
     context['registerForm'] = formRegister()
@@ -364,13 +377,17 @@ def deleteuser(username):
 def news():
     connection = dbapi2.connect(dsn)
     cursor = connection.cursor()
-    statement = """SELECT p.postid, f.fullname, p.content, p.date, p.time, f.userrole, p.title, p.image FROM posts as p
-                LEFT OUTER JOIN person as f ON f.username = p.poster 
+    statement = """SELECT p.postid, f.fullname, p.content, p.date, p.time, f.userrole, p.title, img.filename, img.data FROM posts as p
+                LEFT OUTER JOIN person as f ON f.username = p.poster
+                LEFT OUTER JOIN uploads as img ON p.image = img.id 
                 ORDER BY p.postid DESC
     """
     cursor.execute(statement)
     posts = cursor.fetchall()
-    return RenderTemplate('news.html', posts = posts, newsActive='active')
+    images = {}
+    for post in posts:
+        images[post[0]] = b64encode(post[8]).decode('utf-8')
+    return RenderTemplate('news.html', posts = posts, newsActive='active', images = images)
 
 @app.route('/sendpost', methods = ['post'])
 def sendpost():
@@ -411,21 +428,27 @@ def adm_sendpost():
         form = formSendPost()
         if(request.method == 'POST'):
             if form.validate_on_submit():
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
                 image = form.image.data
                 filename = secure_filename(image.filename)
-                image.save(os.path.join('./static/img/uploads', filename))
-
+                statement = """INSERT INTO uploads (filename, data) VALUES (%s, %s)
+                            """
+                cursor.execute(statement, (filename, dbapi2.Binary(image.read())))
+                connection.commit()
+                statement = """SELECT MAX(id) FROM uploads
+                            """
+                cursor.execute(statement, (filename, dbapi2.Binary(image.read())))
+                id = cursor.fetchone()
                 _Datetime = datetime.datetime.now()
                 poster = session['Username']
                 content = form.content.data
                 title = form.title.data
                 date = _Datetime.strftime("%d/%m/%Y")
                 time = _Datetime.strftime("%H:%M")
-                connection = dbapi2.connect(dsn)
-                cursor = connection.cursor()
                 statement = """INSERT INTO posts (poster, content, date, time, title, image) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s, %s, %s)
                             """
-                cursor.execute(statement, (poster, content, date, time, title, filename))
+                cursor.execute(statement, (poster, content, date, time, title, id))
                 connection.commit()
                 flash('You have succesfully posted an entry.')
                 return redirect(url_for('news'))
@@ -435,6 +458,7 @@ def adm_sendpost():
         return RenderTemplate('adm_sendpost.html', adminActive='active', form=form)
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
 
 @app.route('/buycoins', methods=['GET', 'POST'])
 def buycoins():

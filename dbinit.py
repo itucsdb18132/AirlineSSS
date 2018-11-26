@@ -35,11 +35,15 @@ INIT_STATEMENTS = [
                 date date,
                 "time" time without time zone,
                 title character varying(50) NOT NULL,
-                image character varying(20) NOT NULL,
+                image integer NOT NULL,
                 CONSTRAINT posts_fkey FOREIGN KEY (poster)
                     REFERENCES users (username)
                     ON UPDATE CASCADE
-                    ON DELETE CASCADE
+                    ON DELETE CASCADE,
+                CONSTRAINT posts_fkey2 FOREIGN KEY (image)
+                    REFERENCES uploads (id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
             )
     """,
     """
@@ -57,6 +61,13 @@ INIT_STATEMENTS = [
                     REFERENCES users (username)
                     ON UPDATE CASCADE
                     ON DELETE NO ACTION
+            )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS uploads
+            (   id SERIAL PRIMARY KEY,
+                filename character varying(100) NOT NULL,
+                data bytea NOT NULL
             )
     """,
     ##-------------------SERCAN--------------------##
