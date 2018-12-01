@@ -136,11 +136,15 @@ def adm_updateflight():
                 cursor = connection.cursor()
                 statement = """ INSERT INTO flights (destination_id, plane_id, departure_time, arrival_time, departure_id)
                                             VALUES (%s, %s,%s,%s,%s)
-                                    """ % _to, _on, _dep_date, _arr_date, _from
+                                    """
+                cursor.execute(statement, (_to, _on, _dep_date, _arr_date, _from))
+                connection.commit()
+                statement = """ SELECT MAX(flight_id) FROM flights
+                                                    """
                 cursor.execute(statement)
-                connection.commmit()
-                
-                return RenderTemplate('adm_updateflights.html', adminActive='active')
+                flight = cursor.fetchone()
+                create_tickets(flight, 100)
+                return RenderTemplate('adm_updateflight.html', adminActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
                 return "Hata2!"
@@ -712,26 +716,26 @@ def create_tickets(flight_id, eco_first_ticket_price):
             statement = """SELECT bsn_capacity, eco_capacity FROM flights 
             INNER JOIN planes ON planes.plane_id = flights.plane_id
             WHERE flight_id ='%s'
-            """% flight_id
-            cursor.execute(statement)
+            """
+            cursor.execute(statement, (flight_id))
             capacities = cursor.fetchone()
             bsn_capacity = capacities[0]
             eco_capacity = capacities[1]
 
             for i in range(bsn_capacity):
                 statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'B'  )
-                """ % flight_id, bsnticketid, bsnprice
+                """
 
                 bsnticketid += 1
                 bsnprice += 10
-                cursor.execute(statement)
+                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
             for i in range(eco_capacity):
                 statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'E')
                 """ % flight_id, ecoticketid, eco_first_ticket_price
 
                 ecoticketid += 1
                 eco_first_ticket_price += 5
-                cursor.execute(statement)
+                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
 
             connection.commit()
         except dbapi2.DatabaseError:
