@@ -713,6 +713,7 @@ def create_tickets(flight_id, eco_first_ticket_price):
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
 
+            connection.commit()
             statement = """SELECT bsn_capacity, eco_capacity FROM flights 
             INNER JOIN planes ON planes.plane_id = flights.plane_id
             WHERE flight_id ='%s'
@@ -723,22 +724,22 @@ def create_tickets(flight_id, eco_first_ticket_price):
             eco_capacity = capacities[1]
 
             for i in range(bsn_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'B'  )
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'B')
                 """
 
+                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
                 bsnticketid += 1
                 bsnprice += 10
-                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
+            ecoticketid = bsn_capacity + 1
             for i in range(eco_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'E')
-                """ % flight_id, ecoticketid, eco_first_ticket_price
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'E')
+                """
 
+                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
                 ecoticketid += 1
                 eco_first_ticket_price += 5
-                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
-
             connection.commit()
-        except dbapi2.DatabaseError:
+        except dbapi2.DatabaseError as e:
             connection.rollback()
             return redirect(url_for('errorpage', message="Create Tickets Fonksiyonunda Hata!"))
         finally:
