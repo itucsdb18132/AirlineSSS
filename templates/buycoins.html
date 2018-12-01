@@ -10,11 +10,24 @@
         {{ super() }}
         <p>Welcome, {{ session.Fullname }}!<br></p>
 
-        <form action="/buycoins" method="post">
-            <label for="amount">Amount:</label>
-            <input type="text" name="amount" placeholder="0.00">
-            <button type="submit">Buy</button>
-        </form>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <form action="/buycoins" method="post">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="amount">Amount:</label>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                            </div>
+                            <input type="number" class="form-control" step=".50" max="99999.99" min="0.50" name="amount" placeholder="0.00">
+                        </div>
+                    </div>
+                    <button class="btn btn-large dorne-btn form-control" type="submit">Buy</button>
+                </form>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
 
     </div>
 </div>
