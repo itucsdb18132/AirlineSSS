@@ -1,0 +1,50 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} Tickets {% endblock %}
+
+
+{% block content %}
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+        <div class="container">
+            <h2 class="text-center">Ticket List</h2><br><br><br>
+            {% if tickets%}
+            <table class="table">
+                <tr>
+                    <th scope="col">Flight ID</th>
+                    <th scope="col">Ticket ID</th>
+                    <th scope="col">Seat Number</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Departure Airport</th>
+                    <th scope="col">Destination Airport</th>
+                    <th scope="col">Departure Time</th>
+                    <th scope="col">Arrival Time</th>
+
+                </tr>
+
+                {% for ticket in tickets %}
+                    <tr>
+                        <th scope="row">{{ticket[0]}}</th>
+                        <td>{{ticket[1]}}</td>
+                        <td>{{ticket[2]}}</td>
+                        <td>{{ticket[3]}}</td>
+                        <td>{{ticket[4]}}</td>
+                        <td>{{ticket[5]}}</td>
+                        <td>{{ticket[6]}}</td>
+                        <td>{{ticket[7]}}</td>
+                    </tr>
+                {% endfor %}
+
+
+            </table>
+            {% else %}
+                <p>You have no tickets.</p>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
