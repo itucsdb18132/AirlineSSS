@@ -698,6 +698,48 @@ def buy_ticket(flight_id):
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
 
+
+def create_tickets(flight_id, eco_first_ticket_price):
+    ecoticketid = 1
+    bsnticketid = 1
+    bsnprice = eco_first_ticket_price * 2
+    refreshUserData()
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+
+            statement = """SELECT bsn_capacity, eco_capacity FROM flights 
+            INNER JOIN planes ON planes.plane_id = flights.plane_id
+            WHERE flight_id ='%s'
+            """% flight_id
+            cursor.execute(statement)
+            capacities = cursor.fetchone()
+            bsn_capacity = capacities[0]
+            eco_capacity = capacities[1]
+
+            for i in range(bsn_capacity):
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'B'  )
+                """ % flight_id, bsnticketid, bsnprice
+
+                bsnticketid += 1
+                bsnprice += 10
+                cursor.execute(statement)
+            for i in range(eco_capacity):
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'E')
+                """ % flight_id, ecoticketid, eco_first_ticket_price
+
+                ecoticketid += 1
+                eco_first_ticket_price += 5
+                cursor.execute(statement)
+
+            connection.commit()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+            return redirect(url_for('errorpage', message="Create Tickets Fonksiyonunda Hata!"))
+        finally:
+            connection.close()
+
 ##--------------------MUHAMMED SAID DIKICI------------------------------------------##
 
 if __name__ == "__main__":
