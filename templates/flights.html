@@ -7,28 +7,26 @@
 
 
 <div class="blockcontainer">
-	<div class="blockcontainer-content">
+	<div class="blockcontainer-content container">
 		{{ super() }}
-		<p>
-		  Flight List<br><br><br>
-		</p>
+			<h2 class="text-center">Flight List</h2><br><br><br>
 		{% if flights%}
-		<table border = 1>
+		<table class="table">
 			<tr>
-				<th>Flight ID</th>
-				<th>Departure Airport</th>
-				<th>Departure City</th>
-				<th>Destination Airport</th>
-				<th>Destination City</th>
-				<th>Plane Model</th>
-				<th>Departure Time</th>
-				<th>Arrival Time</th>
+				<th scope="col">Flight ID</th>
+				<th scope="col">Departure Airport</th>
+				<th scope="col">Departure City</th>
+				<th scope="col">Destination Airport</th>
+				<th scope="col">Destination City</th>
+				<th scope="col">Plane Model</th>
+				<th scope="col">Departure Time</th>
+				<th scope="col">Arrival Time</th>
 
 			</tr>
 
 			{% for flight in flights %}
 				<tr>
-					<td><a href="buy_ticket/{{ flight[0] }}">{{flight[0]}}</a></td>
+					<th scope="row"><a href="buy_ticket/{{ flight[0] }}">{{flight[0]}}</a></th>
 					<td>{{flight[1]}}</td>
 					<td>{{flight[2]}}</td>
 					<td>{{flight[3]}}</td>

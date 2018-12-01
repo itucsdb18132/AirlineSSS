@@ -791,26 +791,53 @@ def create_tickets(flight_id, eco_first_ticket_price):
             eco_capacity = capacities[1]
 
             for i in range(bsn_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'B'  )
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'B')
                 """
 
+                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
                 bsnticketid += 1
                 bsnprice += 10
-                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
+            ecoticketid = bsn_capacity + 1
             for i in range(eco_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES('%s','%s', '%s', 'E')
-                """ % flight_id, ecoticketid, eco_first_ticket_price
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'E')
+                """
 
+                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
                 ecoticketid += 1
                 eco_first_ticket_price += 5
-                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
-
             connection.commit()
         except dbapi2.DatabaseError:
             connection.rollback()
-            return redirect(url_for('errorpage', message="Create Tickets Fonksiyonunda Hata!"))
+            return redirect(url_for('errorpage', message="Error in Create Tickets Function!"))
         finally:
             connection.close()
+    else:
+        return redirect(url_for('errorpage', message='Please log in first'))
+
+@app.route('/tickets')
+def view_tickets():
+    if 'Username' in session:
+        refreshUserData()
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            username = session['Username']
+            statement = """SELECT f.flight_id, ticket_id, seat_number, class, a.airport_name, air.airport_name, departure_time, arrival_time  FROM tickets AS t
+                        INNER JOIN flights AS f ON f.flight_id = t.flight_id
+                        INNER JOIN airports AS a ON a.airport_id = f.departure_id
+                        INNER JOIN airports AS air ON air.airport_id = f.destination_id
+                        WHERE t.username = '%s'
+                        """ % username
+            cursor.execute(statement)
+            ticket_info = cursor.fetchall()
+            return RenderTemplate('view_tickets.html', tickets= ticket_info)
+        except dbapi2.DatabaseError:
+            connection.rollback()
+            return redirect(url_for('errorpage', message="Error in View Tickets Function !"))
+        finally:
+            connection.close()
+    else:
+        return redirect(url_for('errorpage', message='Please log in first'))
 
 ##--------------------MUHAMMED SAID DIKICI------------------------------------------##
 
