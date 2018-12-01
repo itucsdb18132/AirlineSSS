@@ -1,0 +1,27 @@
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+        <form action="{{url_for('addPlane')}}" method="POST">
+             Plane Id:
+             <input type="datetime-local" class="custom-date" name="planeId" value="{{ date }}" min="{{ date }}" >
+            Plane Model:
+             <input type="datetime-local" class="custom-date" name="planeModel" value="{{ date }}" min="{{ date }}" >
+            Business Capacity:
+            <input type="datetime-local" class="custom-date" name="bsnCap" value="{{ date }}" min="{{ date }}" >
+            Eco capacity
+            <input type="datetime-local" class="custom-date" name="ecoCap" value="{{ date }}" min="{{ date }}" >
+            <button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Enter</button>
+
+        </form>
+
+
+
+    </div>
+</div>
+{% endblock %}

@@ -100,6 +100,74 @@ def flights():
         finally:
             connection.close()
 
+@app.route("/roundFlight", methods=['GET', 'POST'])
+def roundFlight():
+    departure = request.form['from']
+    destination = request.form['to']
+    departure_time = request.form['date']
+    departure_time2 = request.form['date2']
+    destination2 = request.form['from']
+    departure2 = request.form['to']
+    try:
+        connection = dbapi2.connect(dsn)
+        cursor = connection.cursor()
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+                                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                            WHERE c.city = %s AND c2.city = %s AND f.departure_time::text LIKE %s"""
+        departure_time += '%'
+        cursor.execute(statement, (departure, destination, departure_time))
+        rows = cursor.fetchall()
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+                                                    INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                                    INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                                    INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                                    INNER JOIN cities AS c ON a.city_id = c.city_id
+                                                    INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                                    WHERE c.city = %s AND c2.city = %s AND f.departure_time::text LIKE %s"""
+        departure_time2 += '%'
+        cursor.execute(statement, (departure2, destination2, departure_time2))
+        rows2 = cursor.fetchall()
+        return RenderTemplate('roundFlight.html', flights=rows, flightss=rows2, flightsActive='active')
+    except dbapi2.DatabaseError as e:
+        connection.rollback()
+        return str(e)
+    finally:
+        connection.close()
+@app.route('/addPlane', methods = ['GET', 'POST'])
+def addPlane():
+    refreshUserData()
+    if ifAdmin():
+        if request.method == 'GET':
+            planeid = request.form['planeId']
+            planemodel = request.form['planeModel']
+            bsncap = request.form['bsnCap']
+            ecocap = request.form['ecoCap']
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ INSERT INTO planes (plane_id, plane_model, bsn_capacity, eco_capacity)
+                                                VALUES (%s, %s,%s,%s)
+                                        """
+                cursor.execute(statement, (planeid, planemodel, bsncap, ecocap))
+                connection.commit()
+
+                return RenderTemplate('addPlane.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+        else:
+            return redirect(url_for('errorpage', message='Not Authorized!'))
+
+    else:
+        return redirect(url_for('errorpage', message='Not Authorized!'))
+
+
 @app.route('/adm_updateflight', methods = ['GET', 'POST'])
 def adm_updateflight():
     refreshUserData()
