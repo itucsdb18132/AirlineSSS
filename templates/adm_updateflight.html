@@ -7,48 +7,35 @@
 
 <div class="blockcontainer">
 	<div class="blockcontainer-content">
-        {{ super() }}
-       <form action="/adm_updateflight/{{ flight[0] }}" method="post">
-           <table>
-               <tr>
-                   <td>
-                       <label>Flight ID</label>
-                   </td>
-                   <td>
-                       <input type="text" placeholder="{{ flight[0] }}" id="flight">
-                   </td>
-                   <td>
-                       <input type="checkbox" name="flight_cb">
-                   </td>
-               </tr>
-               <tr>
-                   <td>
-                       <label>Destination ID</label>
-                   </td>
-                   <td>
-                       <input type="text" placeholder="{{ flight[1] }}" name="destination">
-                   </td>
-                   <td>
-                       <input type="checkbox" name="destination_cb">
-                   </td>
-               </tr>
-               <tr>
-                   <td>
-                       <label>Plane ID</label>
-                   </td>
-                   <td>
-                       <input type="text" placeholder="{{ flight[2] }}" name="plane">
-                   </td>
-                   <td>
-                       <input type="checkbox" name="plane_cb">
-                   </td>
-               </tr>
-               <tr>
-                   <td>
-                       <button type="submit">UPDATE</button>
-                   </td>
-               </tr>
-           </table>
+        <form action="{{url_for('adm_updateflight')}}" method="POST">
+              From:
+            <select class="custom-select" name="from">
+                <option selected>All Destinations</option>
+                {% for city in cities %}
+                    <option value="{{city[2]}}">{{city[1]}} - {{city[0]}}</option>
+                {% endfor %}
+            </select>
+            To:
+            <select class="custom-select" name="to">
+                <option selected>All Destinations</option>
+                {% for city in cities %}
+                    <option value="{{city[2]}}">{{city[1]}} - {{city[0]}}</option>
+                {% endfor %}
+            </select>
+            Plane:
+            <select class="custom-select" name="on">
+                <option selected>Planes</option>
+                {% for plane in planes %}
+                    <option value="{{plane[0]}}">{{plane[0]}} - {{plane[1]}} - {{plane[2]}} - {{plane[3]}}</option>
+                {% endfor %}
+            </select>
+            Departure Time:
+            <input type="datetime-local" class="custom-date" name="dep_date" value="{{ date }}" min="{{ date }}" >
+            Arrival Time:
+            <input type="datetime-local" class="custom-date" name="arr_date" value="{{ date }}" min="{{ date }}" >
+            <button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Enter</button>
+
+        </form>
 
 
 

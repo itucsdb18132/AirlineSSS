@@ -100,25 +100,53 @@ def flights():
         finally:
             connection.close()
 
-@app.route('/adm_updateflight/<flight_id>', methods = ['GET', 'POST'])
+@app.route('/adm_updateflight', methods = ['GET', 'POST'])
 def adm_updateflight():
+    refreshUserData()
     if ifAdmin():
-        if request.method == 'POST' :
+        if request.method == 'GET' :
             try:
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """UPDATE flights SET
+                statement = """ SELECT airport_name, city, airport_id FROM airports AS a
+                INNER JOIN cities AS c ON a.city_id = c.city_id
+                                    ORDER BY city
                 """
                 cursor.execute(statement)
                 rows = cursor.fetchall()
-                return RenderTemplate('adm_updateflight.html', flight=rows, adminActive='active')
+                statement = """ SELECT plane_id, plane_model, bsn_capacity, eco_capacity FROM planes AS p
+                                ORDER BY plane_id
+                """
+                cursor.execute(statement)
+                plane = cursor.fetchall()
+                return RenderTemplate('adm_updateflight.html', cities=rows, planes=plane, adminActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
-                return "Hata!"
+                return "Hata1!"
             finally:
                 connection.close()
-        else:
-            return RenderTemplate('adm_updateflight.html', adminActive='active')
+        else :
+            try:
+                _from = request.form['from']
+                _to = request.form['to']
+                _on = request.form['on']
+                _arr_date = request.form['arr_date']
+                _dep_date = request.form['dep_date']
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ INSERT INTO flights (destination_id, plane_id, departure_time, arrival_time, departure_id)
+                                            VALUES (%s, %s,%s,%s,%s)
+                                    """ % _to, _on, _dep_date, _arr_date, _from
+                cursor.execute(statement)
+                connection.commmit()
+                
+                return RenderTemplate('adm_updateflights.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+
 
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
