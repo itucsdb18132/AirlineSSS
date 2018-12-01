@@ -141,7 +141,7 @@ def roundFlight():
 def addPlane():
     refreshUserData()
     if ifAdmin():
-        if request.method == 'GET':
+        if request.method == 'POST':
             planeid = request.form['planeId']
             planemodel = request.form['planeModel']
             bsncap = request.form['bsnCap']
@@ -162,7 +162,7 @@ def addPlane():
             finally:
                 connection.close()
         else:
-            return redirect(url_for('errorpage', message='Not Authorized!'))
+            return RenderTemplate('addPlane.html')
 
     else:
         return redirect(url_for('errorpage', message='Not Authorized!'))

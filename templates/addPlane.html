@@ -9,13 +9,13 @@
 	<div class="blockcontainer-content">
         <form action="{{url_for('addPlane')}}" method="POST">
              Plane Id:
-             <input type="datetime-local" class="custom-date" name="planeId" value="{{ date }}" min="{{ date }}" >
+             <input type="text" class="form-control" name="planeId" >
             Plane Model:
-             <input type="datetime-local" class="custom-date" name="planeModel" value="{{ date }}" min="{{ date }}" >
+             <input type="text" class="form-control" name="planeModel"  >
             Business Capacity:
-            <input type="datetime-local" class="custom-date" name="bsnCap" value="{{ date }}" min="{{ date }}" >
+            <input type="text" class="form-control" name="bsnCap">
             Eco capacity
-            <input type="datetime-local" class="custom-date" name="ecoCap" value="{{ date }}" min="{{ date }}" >
+            <input type="text" class="form-control" name="ecoCap">
             <button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Enter</button>
 
         </form>
