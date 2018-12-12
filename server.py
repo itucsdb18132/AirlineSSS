@@ -41,18 +41,22 @@ def index():
         cursor.execute(statement)
         posts = cursor.fetchall()
 
-        statement = """SELECT postid, fullname, content, date, title, img.data, img.filename FROM posts
-                        INNER JOIN person ON poster = username
-                        LEFT OUTER JOIN uploads as img ON posts.image = img.id
-                        ORDER BY postid DESC
-                        LIMIT 6
+        statement = """SELECT DISTINCT t.rate, t.flight_id, c.city, c2.city FROM tickets AS t
+                        INNER JOIN flights AS f ON f.flight_id = t.flight_id
+                        INNER JOIN airports AS a1 ON a1.airport_id = f.departure_id
+                        INNER JOIN airports AS a2 ON a2.airport_id = f.destination_id
+                        INNER JOIN cities AS c ON c.city_id = a1.city_id
+                        INNER JOIN cities AS c2 ON c2.city_id = a2.city_id
+                        WHERE t.rate < 1
+                        ORDER BY t.rate ASC
+                        LIMIT 10
                     """
         cursor.execute(statement)
-        posts = cursor.fetchall()
+        discount = cursor.fetchall()
         images = {}
         for post in posts:
             images[post[0]] = b64encode(post[5]).decode('utf-8')
-        return RenderTemplate('index.html', cities=cities, date=date, homeActive='active', posts=posts, images=images)
+        return RenderTemplate('index.html', cities=cities, date=date, discount=discount, homeActive='active', posts=posts, images=images)
     except dbapi2.DatabaseError as e:
         connection.rollback()
         return str(e)
