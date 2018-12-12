@@ -5,7 +5,6 @@ import datetime
 import mailsender
 import decimal
 from forms import formSendPost, formForgotPass, formRegister, formLogin
-from werkzeug.utils import secure_filename
 from base64 import b64encode, b64decode
 
 app = Flask(__name__)
