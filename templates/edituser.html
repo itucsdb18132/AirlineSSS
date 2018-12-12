@@ -1,0 +1,35 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} {{ session.Username }} {% endblock %}
+{% block content %}
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+        <div class="container pb-5">
+            <form action="/edit_user" method="post">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    {{ form.fullname.label }}
+                    {{ form.fullname(class='form-control', placeholder=fullname) }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class='form-control', placeholder=email) }}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class='form-control') }}
+                </div>
+                <div class="form-group">
+                </div>
+                <button type="submit" class="btn dorne-btn btn-block">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

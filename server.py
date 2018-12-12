@@ -4,7 +4,7 @@ import psycopg2 as dbapi2
 import datetime
 import mailsender
 import decimal
-from forms import formSendPost, formForgotPass, formRegister, formLogin
+from forms import formSendPost, formForgotPass, formRegister, formLogin, formEditUser
 from base64 import b64encode, b64decode
 
 app = Flask(__name__)
@@ -58,7 +58,7 @@ def searchList():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
                                     INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                     INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                     INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -82,7 +82,7 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
+            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -110,7 +110,7 @@ def roundFlight():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
                                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -120,7 +120,7 @@ def roundFlight():
         departure_time += '%'
         cursor.execute(statement, (departure, destination, departure_time))
         rows = cursor.fetchall()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
                                                     INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                                     INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                                     INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -166,7 +166,64 @@ def addPlane():
     else:
         return redirect(url_for('errorpage', message='Not Authorized!'))
 
+@app.route('/discount/', methods = ['GET', 'POST'])
+def discount():
+    if ifAdmin():
+        refreshUserData()
+        if request.method == 'GET':
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
+                                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                        """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
 
+                return RenderTemplate('discount.html', flights=rows, flightsActive='active')
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+        else :
+            try:
+                _id = request.form['id']
+                _discount = request.form['discount_rate']
+
+
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ SELECT t.price FROM tickets AS t
+                                    WHERE flight_id = '%s'
+                                    """ % _id
+
+                cursor.execute(statement)
+                price = cursor.fetchall()
+                for i in price
+                    price = price - (price*float(_discount)/100)
+
+                connection.commit()
+
+                statement = """ INSERT INTO tickets (price)
+                                    VALUES (%s)
+                                        WHERE flight_id = '%s'
+                """ % price, _id
+                cursor.execute(statement, (price))
+                flight = cursor.fetchall()
+                flash('Discount has been set')
+                return RenderTemplate('discount.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
 @app.route('/adm_updateflight', methods = ['GET', 'POST'])
 def adm_updateflight():
     refreshUserData()
@@ -249,7 +306,7 @@ def login():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT * FROM users WHERE username = '%s'  
+        statement = """SELECT * FROM users WHERE username = '%s'
         """ % _Username
         cursor.execute(statement)
         if cursor.rowcount > 0:
@@ -380,7 +437,7 @@ def adm_updateuser(username):
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
 
-            statement = """UPDATE person SET 
+            statement = """UPDATE person SET
             """
             set_text = ""
             if 'fname_cb' in form_dict and form_dict['fname_cb']:
@@ -478,7 +535,7 @@ def news():
     cursor = connection.cursor()
     statement = """SELECT p.postid, f.fullname, p.content, p.date, p.time, f.userrole, p.title, img.filename, img.data FROM posts as p
                 LEFT OUTER JOIN person as f ON f.username = p.poster
-                LEFT OUTER JOIN uploads as img ON p.image = img.id 
+                LEFT OUTER JOIN uploads as img ON p.image = img.id
                 ORDER BY p.postid DESC
     """
     cursor.execute(statement)
@@ -488,44 +545,12 @@ def news():
         images[post[0]] = b64encode(post[8]).decode('utf-8')
     return RenderTemplate('news.html', posts = posts, newsActive='active', images = images)
 
-@app.route('/sendpost', methods = ['post'])
-def sendpost():
-    refreshUserData()
-    if ifAdmin():
-        form = formSendPost()
-        if form.validate_on_submit():
-
-            image = form.image.data
-            filename = secure_filename(image.filename)
-            image.save(os.path.join('./static/img/uploads', filename))
-
-            _Datetime = datetime.datetime.now()
-            poster = session['Username']
-            content = form.content.data
-            title = form.title.data
-            date = _Datetime.strftime("%d/%m/%Y")
-            time = _Datetime.strftime("%H:%M")
-            connection = dbapi2.connect(dsn)
-            cursor = connection.cursor()
-            statement = """INSERT INTO posts (poster, content, date, time, title, image) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s, %s, %s)
-                        """
-            cursor.execute(statement, (poster, content, date, time, title, filename))
-            connection.commit()
-            flash('You have succesfully posted an entry.')
-            return redirect(url_for('test'))
-        for key in form.errors:
-            flash(form.errors[key][0])
-
-    else:
-        return redirect(url_for('errorpage', message = 'Not Authorized!'))
-    return redirect(url_for('news'))
-
 @app.route('/adm_sendpost', methods = ['GET', 'POST'])
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
         form = formSendPost()
-        if(request.method == 'POST'):
+        if request.method == 'POST':
             if form.validate_on_submit():
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
@@ -557,7 +582,6 @@ def adm_sendpost():
         return RenderTemplate('adm_sendpost.html', adminActive='active', form=form)
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
-
 
 @app.route('/buycoins', methods=['GET', 'POST'])
 def buycoins():
@@ -621,7 +645,7 @@ def adm_pymreqs():
                         statement = """UPDATE person
                                         SET balance = t1.balance + t2.amount
                                         FROM person as t1
-                                        INNER JOIN payments as t2 ON t2.username = t1.username 
+                                        INNER JOIN payments as t2 ON t2.username = t1.username
                                         WHERE t2.paymentid = %s
                                           AND person.username = t2.username;
                         """ % pymId
@@ -672,6 +696,31 @@ def forgotpassword():
             flash(form.errors[error][0])
         return RenderTemplate('forgotpassword.html', form=form)
 
+@app.route('/edituser', methods=['GET', 'POST'])
+def edituser():
+    if refreshUserData():
+        form = formEditUser()
+        if request.method == 'GET':
+            return RenderTemplate('edituser.html', form = form, fullname=session['Fullname'], email=session['Email'])
+        else:
+            if form.validate_on_submit():
+                newFullname = form.fullname.data
+                newEmain = form.email.data
+                newPassword = form.password.data
+                try:
+                    connection = dbapi2.connect(dsn)
+                    cursor = connection.cursor()
+                    statement = """
+
+                    """
+                except dbapi2.DatabaseError as e:
+                    connection.rollback()
+                    return redirect(url_for('error_page', str(e)))
+                finally:
+                    connection.close()
+
+
+
 ##--------------------SELIM ENES KILICASLAN-----------------------------------------##
 
 
@@ -687,9 +736,9 @@ def buy_ticket(flight_id):
             try:
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT class, COUNT(*) FROM tickets WHERE flight_id = '%s' AND username IS NULL 
+                statement = """SELECT class, COUNT(*) FROM tickets WHERE flight_id = '%s' AND username IS NULL
                                     GROUP BY class
-                            
+
                 """ % flight_id
                 cursor.execute(statement)
                 rows = cursor.fetchall()
@@ -701,7 +750,7 @@ def buy_ticket(flight_id):
                     elif row[0] == 'B':
                         emptyseatsforbsn = row[1]
 
-                statement = """SELECT class, MIN(price) FROM tickets WHERE flight_id = '%s' AND username IS NULL 
+                statement = """SELECT class, MIN(price) FROM tickets WHERE flight_id = '%s' AND username IS NULL
                                                     GROUP BY class
 
                                 """ % flight_id
@@ -727,7 +776,7 @@ def buy_ticket(flight_id):
                 session['Username']
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT ticket_id, price from tickets 
+                statement = """SELECT ticket_id, price from tickets
                                     WHERE ticket_id = (SELECT MIN(ticket_id)
                                         FROM tickets WHERE flight_id = %s AND username IS NULL AND class = %s)
                                             AND flight_id = %s
@@ -737,19 +786,19 @@ def buy_ticket(flight_id):
                 ticketid = row[0]
                 ticketprice = row[1]
                 if ticketprice <= decimal.Decimal(session['Balance']):
-                    statement = """UPDATE tickets 
+                    statement = """UPDATE tickets
                                         SET username = %s
                                             WHERE ticket_id = %s
                                                 AND flight_id = %s
-                                                
-                    
+
+
                                     """
                     cursor.execute(statement, (session['Username'], ticketid, flight_id))
-                    statement = """UPDATE person 
+                    statement = """UPDATE person
                                         SET balance = balance-%s
                                             WHERE username = %s
-    
-    
+
+
                                     """
                     cursor.execute(statement,(ticketprice, session['Username']))
                     connection.commit()
@@ -769,7 +818,6 @@ def buy_ticket(flight_id):
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
 
-
 def create_tickets(flight_id, eco_first_ticket_price):
     ecoticketid = 1
     bsnticketid = 1
@@ -780,7 +828,7 @@ def create_tickets(flight_id, eco_first_ticket_price):
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
 
-            statement = """SELECT bsn_capacity, eco_capacity FROM flights 
+            statement = """SELECT bsn_capacity, eco_capacity FROM flights
             INNER JOIN planes ON planes.plane_id = flights.plane_id
             WHERE flight_id ='%s'
             """
@@ -790,18 +838,18 @@ def create_tickets(flight_id, eco_first_ticket_price):
             eco_capacity = capacities[1]
 
             for i in range(bsn_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'B')
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class, base_price) VALUES(%s, %s, %s, 'B', %s)
                 """
 
-                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
+                cursor.execute(statement, (flight_id, bsnticketid, bsnprice, bsnprice))
                 bsnticketid += 1
                 bsnprice += 10
             ecoticketid = bsn_capacity + 1
             for i in range(eco_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'E')
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class, base_price) VALUES(%s, %s, %s, 'E', %s)
                 """
 
-                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
+                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price, eco_first_ticket_price))
                 ecoticketid += 1
                 eco_first_ticket_price += 5
             connection.commit()
