@@ -59,7 +59,7 @@ def searchList():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
                                     INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                     INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                     INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -83,7 +83,7 @@ def flights():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+            statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -111,7 +111,7 @@ def roundFlight():
     try:
         connection = dbapi2.connect(dsn)
         cursor = connection.cursor()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
                                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -121,7 +121,7 @@ def roundFlight():
         departure_time += '%'
         cursor.execute(statement, (departure, destination, departure_time))
         rows = cursor.fetchall()
-        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, p.plane_model, f.departure_time, f.arrival_time FROM flights AS f 
+        statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
                                                     INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                                     INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                                     INNER JOIN planes AS p ON f.plane_id = p.plane_id

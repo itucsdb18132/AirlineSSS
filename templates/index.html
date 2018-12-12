@@ -64,14 +64,17 @@
 													<input type="date" class="custom-date form-control" name="date" value="{{ date }}" min="{{ date }}" >
 												</div>
 											</div>
+											<br>
 											<div class="row">
 												<div class="col-md-6">
+
 													<select class="custom-select form-control" name="to">
 														<option selected>All Destinations</option>
 														{% for city in cities %}
 															<option value="{{city[0]}}">{{city[0]}}</option>
 														{% endfor %}
 													</select>
+
 												</div>
 												<div class="col-md-6">
 													<input type="date" class="custom-date form-control" name="date2" value="{{ date }}" min="{{ date }}" >
