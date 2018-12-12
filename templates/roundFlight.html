@@ -1,0 +1,64 @@
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} Flight List {% endblock %}
+{% block content %}
+
+
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+		{{ super() }}
+		<p>
+		  Flight List<br><br><br>
+		</p>
+		{% if flights%}
+		<table border = 1>
+			<tr>
+				<th>Flight ID</th>
+				<th>Departure Airport</th>
+				<th>Departure City</th>
+				<th>Destination Airport</th>
+				<th>Destination City</th>
+				<th>Plane Model</th>
+				<th>Departure Time</th>
+				<th>Arrival Time</th>
+
+			</tr>
+
+			{% for flight in flights %}
+				<tr>
+					<td><a href="buy_ticket/{{ flight[0] }}">{{flight[0]}}</a></td>
+					<td>{{flight[1]}}</td>
+					<td>{{flight[2]}}</td>
+					<td>{{flight[3]}}</td>
+					<td>{{flight[4]}}</td>
+					<td>{{flight[5]}}</td>
+					<td>{{flight[6]}}</td>
+					<td>{{flight[7]}}</td>
+				</tr>
+			{% endfor %}
+            {% for flight2 in flightss %}
+				<tr>
+					<td><a href="buy_ticket/{{ flight2[0] }}">{{flight2[0]}}</a></td>
+					<td>{{flight2[1]}}</td>
+					<td>{{flight2[2]}}</td>
+					<td>{{flight2[3]}}</td>
+					<td>{{flight2[4]}}</td>
+					<td>{{flight2[5]}}</td>
+					<td>{{flight2[6]}}</td>
+					<td>{{flight2[7]}}</td>
+				</tr>
+			{% endfor %}
+
+
+
+		</table>
+		{% else %}
+			<p>No flight</p>
+
+			{% endif %}
+	</div>
+</div>
+
+{% endblock %}

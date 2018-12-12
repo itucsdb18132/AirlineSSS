@@ -1,0 +1,27 @@
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+        <form action="{{url_for('addPlane')}}" method="POST">
+             Plane Id:
+             <input type="text" class="form-control" name="planeId" >
+            Plane Model:
+             <input type="text" class="form-control" name="planeModel"  >
+            Business Capacity:
+            <input type="text" class="form-control" name="bsnCap">
+            Eco capacity
+            <input type="text" class="form-control" name="ecoCap">
+            <button type="submit" class="btn dorne-btn"><i class="fa fa-search pr-2" aria-hidden="true"></i> Enter</button>
+
+        </form>
+
+
+
+    </div>
+</div>
+{% endblock %}
