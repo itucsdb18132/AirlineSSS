@@ -85,3 +85,7 @@ class formRegister(FlaskForm):
             return False
         else:
             return True
+
+class formDiscount (FlaskForm):
+    id = SelectField('ID:', validators=[InputRequired()])
+    discount = StringField('Discount:', validators=[InputRequired()], render_kw={"placeholder": "Discount rate"})

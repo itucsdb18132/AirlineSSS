@@ -131,6 +131,8 @@ INIT_STATEMENTS = [
                 price numeric(7,2) NOT NULL,
                 class character varying(1) NOT NULL,
                 seat_number character varying(3),
+                rate numeric (3,2) NOT NULL DEFAULT 1,
+                base_price numeric (7,2) NOT NULL,
                 CONSTRAINT tickets_pkey PRIMARY KEY (flight_id, ticket_id),
                 
                 CONSTRAINT flight_id FOREIGN KEY (flight_id)

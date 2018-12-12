@@ -167,7 +167,64 @@ def addPlane():
     else:
         return redirect(url_for('errorpage', message='Not Authorized!'))
 
+@app.route('/discount/', methods = ['GET', 'POST'])
+def discount():
+    if ifAdmin():
+        refreshUserData()
+        if request.method == 'GET':
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f 
+                                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                        """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
 
+                return RenderTemplate('discount.html', flights=rows, flightsActive='active')
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+        else :
+            try:
+                _id = request.form['id']
+                _discount = request.form['discount_rate']
+
+
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ SELECT t.price FROM tickets AS t
+                                    WHERE flight_id = '%s'
+                                    """ % _id
+
+                cursor.execute(statement)
+                price = cursor.fetchall()
+                for i in price
+                    price = price - (price*float(_discount)/100)
+
+                connection.commit()
+
+                statement = """ INSERT INTO tickets (price)
+                                    VALUES (%s)
+                                        WHERE flight_id = '%s'
+                """ % price, _id
+                cursor.execute(statement, (price))
+                flight = cursor.fetchall()
+                flash('Discount has been set')
+                return RenderTemplate('discount.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))
 @app.route('/adm_updateflight', methods = ['GET', 'POST'])
 def adm_updateflight():
     refreshUserData()
