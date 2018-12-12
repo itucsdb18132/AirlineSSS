@@ -130,26 +130,30 @@
 			</div>
 
 			<div class="row">
+
 				<div class="col-12">
 					<div class="features-slides owl-carousel">
 						<!-- Single Features Area -->
+						{% if discount %}
+							{% for disc in discount %}
 						<div class="single-features-area">
 							<img src="../static/img/bg-img/iconn.gif" alt="">
 							<!-- Price -->
 							<div class="price-start">
-								<p>Up to 50%</p>
+								<p>{{ (1-disc[0])*100 }}%</p>
 							</div>
 							<div class="feature-content d-flex align-items-center justify-content-between">
 								<div class="feature-title">
-									<h5>Ankara-İstanbul</h5>
-									<p>Flight id : 19</p>
+									<h5>{{ disc[2] }} - {{ disc[3] }}</h5>
+									<p>Flight id: {{ disc[1] }}</p>
 								</div>
 								<div class="feature-favourite">
 									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
 								</div>
 							</div>
 						</div>
-
+							{% endfor %}
+						{% endif %}
 					</div>
 				</div>
 			</div>
