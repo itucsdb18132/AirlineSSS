@@ -4,7 +4,7 @@ import psycopg2 as dbapi2
 import datetime
 import mailsender
 import decimal
-from forms import formSendPost, formForgotPass, formRegister, formLogin
+from forms import formSendPost, formForgotPass, formRegister, formLogin, formEditUser
 from werkzeug.utils import secure_filename
 from base64 import b64encode, b64decode
 
@@ -489,44 +489,12 @@ def news():
         images[post[0]] = b64encode(post[8]).decode('utf-8')
     return RenderTemplate('news.html', posts = posts, newsActive='active', images = images)
 
-@app.route('/sendpost', methods = ['post'])
-def sendpost():
-    refreshUserData()
-    if ifAdmin():
-        form = formSendPost()
-        if form.validate_on_submit():
-
-            image = form.image.data
-            filename = secure_filename(image.filename)
-            image.save(os.path.join('./static/img/uploads', filename))
-
-            _Datetime = datetime.datetime.now()
-            poster = session['Username']
-            content = form.content.data
-            title = form.title.data
-            date = _Datetime.strftime("%d/%m/%Y")
-            time = _Datetime.strftime("%H:%M")
-            connection = dbapi2.connect(dsn)
-            cursor = connection.cursor()
-            statement = """INSERT INTO posts (poster, content, date, time, title, image) VALUES (%s, %s, TO_DATE(%s, 'DD/MM/YYYY'), %s, %s, %s)
-                        """
-            cursor.execute(statement, (poster, content, date, time, title, filename))
-            connection.commit()
-            flash('You have succesfully posted an entry.')
-            return redirect(url_for('test'))
-        for key in form.errors:
-            flash(form.errors[key][0])
-
-    else:
-        return redirect(url_for('errorpage', message = 'Not Authorized!'))
-    return redirect(url_for('news'))
-
 @app.route('/adm_sendpost', methods = ['GET', 'POST'])
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
         form = formSendPost()
-        if(request.method == 'POST'):
+        if request.method == 'POST':
             if form.validate_on_submit():
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
@@ -558,7 +526,6 @@ def adm_sendpost():
         return RenderTemplate('adm_sendpost.html', adminActive='active', form=form)
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
-
 
 @app.route('/buycoins', methods=['GET', 'POST'])
 def buycoins():
@@ -673,6 +640,31 @@ def forgotpassword():
             flash(form.errors[error][0])
         return RenderTemplate('forgotpassword.html', form=form)
 
+@app.route('/edituser', methods=['GET', 'POST'])
+def edituser():
+    if refreshUserData():
+        form = formEditUser()
+        if request.method == 'GET':
+            return RenderTemplate('edituser.html', form = form, fullname=session['Fullname'], email=session['Email'])
+        else:
+            if form.validate_on_submit():
+                newFullname = form.fullname.data
+                newEmain = form.email.data
+                newPassword = form.password.data
+                try:
+                    connection = dbapi2.connect(dsn)
+                    cursor = connection.cursor()
+                    statement = """
+                            
+                    """
+                except dbapi2.DatabaseError as e:
+                    connection.rollback()
+                    return redirect(url_for('error_page', str(e)))
+                finally:
+                    connection.close()
+
+
+
 ##--------------------SELIM ENES KILICASLAN-----------------------------------------##
 
 
@@ -770,7 +762,6 @@ def buy_ticket(flight_id):
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
 
-
 def create_tickets(flight_id, eco_first_ticket_price):
     ecoticketid = 1
     bsnticketid = 1
@@ -791,18 +782,18 @@ def create_tickets(flight_id, eco_first_ticket_price):
             eco_capacity = capacities[1]
 
             for i in range(bsn_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'B')
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class, base_price) VALUES(%s, %s, %s, 'B', %s)
                 """
 
-                cursor.execute(statement, (flight_id, bsnticketid, bsnprice))
+                cursor.execute(statement, (flight_id, bsnticketid, bsnprice, bsnprice))
                 bsnticketid += 1
                 bsnprice += 10
             ecoticketid = bsn_capacity + 1
             for i in range(eco_capacity):
-                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class) VALUES(%s, %s, %s, 'E')
+                statement = """INSERT INTO tickets(flight_id, ticket_id, price, class, base_price) VALUES(%s, %s, %s, 'E', %s)
                 """
 
-                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price))
+                cursor.execute(statement, (flight_id, ecoticketid, eco_first_ticket_price, eco_first_ticket_price))
                 ecoticketid += 1
                 eco_first_ticket_price += 5
             connection.commit()

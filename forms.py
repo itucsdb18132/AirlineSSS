@@ -85,3 +85,8 @@ class formRegister(FlaskForm):
             return False
         else:
             return True
+
+class formEditUser(FlaskForm):
+    fullname = StringField('Fullname:')
+    email = StringField('Email:')
+    password = PasswordField('Password:')
