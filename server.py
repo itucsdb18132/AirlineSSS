@@ -175,6 +175,7 @@ def discount():
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
                 statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
+
                                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -194,32 +195,28 @@ def discount():
             try:
                 _id = request.form['id']
                 _discount = request.form['discount_rate']
-
+                rate = 1 - float(_discount)/100
 
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """ SELECT t.price FROM tickets AS t
-                                    WHERE flight_id = '%s'
-                                    """ % _id
-
-                cursor.execute(statement)
-                price = cursor.fetchall()
-                for i in price
-                    price = price - (price*float(_discount)/100)
-
+                statement = """ UPDATE tickets SET rate = %s
+                                    WHERE flight_id = %s
+                                    """
+                cursor.execute(statement, (rate, _id))
                 connection.commit()
 
-                statement = """ INSERT INTO tickets (price)
-                                    VALUES (%s)
-                                        WHERE flight_id = '%s'
-                """ % price, _id
-                cursor.execute(statement, (price))
-                flight = cursor.fetchall()
+
+
+                statement = """ UPDATE tickets SET price = base_price*rate
+                                        WHERE flight_id = %s
+                """ % _id
+                cursor.execute(statement)
+                connection.commit()
                 flash('Discount has been set')
                 return RenderTemplate('discount.html', adminActive='active')
-            except dbapi2.DatabaseError:
+            except dbapi2.DatabaseError as e:
                 connection.rollback()
-                return "Hata2!"
+                return str(e)
             finally:
                 connection.close()
     else:
@@ -711,7 +708,6 @@ def edituser():
                     connection = dbapi2.connect(dsn)
                     cursor = connection.cursor()
                     statement = """
-
                     """
                 except dbapi2.DatabaseError as e:
                     connection.rollback()
