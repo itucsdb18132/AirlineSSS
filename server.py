@@ -40,6 +40,15 @@ def index():
                     """
         cursor.execute(statement)
         posts = cursor.fetchall()
+
+        statement = """SELECT postid, fullname, content, date, title, img.data, img.filename FROM posts
+                        INNER JOIN person ON poster = username
+                        LEFT OUTER JOIN uploads as img ON posts.image = img.id
+                        ORDER BY postid DESC
+                        LIMIT 6
+                    """
+        cursor.execute(statement)
+        posts = cursor.fetchall()
         images = {}
         for post in posts:
             images[post[0]] = b64encode(post[5]).decode('utf-8')
