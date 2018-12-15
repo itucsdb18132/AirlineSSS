@@ -10,6 +10,7 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
 #Enes
+@app.route("/adm_sendpost", methods = ['GET', 'POST'])
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
@@ -48,6 +49,7 @@ def adm_sendpost():
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 #Enes
+@app.route("/adm_pymreqs", methods = ['GET', 'POST'])
 def adm_pymreqs():
     refreshUserData()
     if ifAdmin():
@@ -102,6 +104,7 @@ def adm_pymreqs():
                 connection.close()
 
 #Enes
+@app.route("/deleteuser/<username>", methods = ['POST'])
 def deleteuser(username):
     if ifAdmin():
         try:
@@ -125,6 +128,7 @@ def deleteuser(username):
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 #Enes
+@app.route("/adminpage")
 def adminpage():
     if ifAdmin():
         return RenderTemplate('adminpage.html', adminActive='active')
@@ -132,6 +136,7 @@ def adminpage():
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 #Enes
+@app.route("/adm_users")
 def adm_users():
     if ifAdmin():
         try:
@@ -152,6 +157,7 @@ def adm_users():
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 #Enes
+@app.route("/adm_updateuser/<username>")
 def updateuser(username):
     if ifAdmin():
         try:
@@ -171,6 +177,7 @@ def updateuser(username):
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 #Enes
+@app.route("/adm_users/<username>", methods = ['POST'])
 def adm_updateuser(username):
     if ifAdmin():
         try:
@@ -208,6 +215,7 @@ def adm_updateuser(username):
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 #Sercan
+@app.route("/adm_updateflight", methods = ['GET', 'POST'])
 def adm_updateflight():
     refreshUserData()
     if ifAdmin():
@@ -263,6 +271,7 @@ def adm_updateflight():
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 #Sercan
+@app.route("/adm_deleteflight", methods = ['GET', 'POST'])
 def adm_deleteflight():
     if ifAdmin():
         refreshUserData()
@@ -315,6 +324,7 @@ def adm_deleteflight():
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
 #Enes
+@app.route("/adm_fabrika_ayarlari")
 def adm_fabrika_ayarlari():
     if ifAdmin():
         try:

@@ -7,6 +7,13 @@ DATABASE_URL = 'postgres://kbktqbcfmdxpbw:76006678dc4edef0501db56d75112cacde489d
 
 INIT_STATEMENTS = [
     """
+        CREATE TABLE IF NOT EXISTS users
+            (
+                username character varying(20) PRIMARY KEY,
+                password character varying(50) NOT NULL
+            )
+    """,
+    """
         CREATE TABLE IF NOT EXISTS person
             (
                 username character varying(20) PRIMARY KEY,
@@ -18,32 +25,6 @@ INIT_STATEMENTS = [
                     REFERENCES users (username)
                     ON UPDATE RESTRICT
                     ON DELETE CASCADE
-            )
-    """,
-    """
-        CREATE TABLE IF NOT EXISTS users
-            (
-                username character varying(20) PRIMARY KEY,
-                password character varying(50) NOT NULL
-            )
-    """,
-    """
-        CREATE TABLE IF NOT EXISTS posts
-            (   postid SERIAL PRIMARY KEY,
-                poster character varying(20) NOT NULL,
-                content character varying(400) NOT NULL,
-                date date,
-                "time" time without time zone,
-                title character varying(50) NOT NULL,
-                image integer NOT NULL,
-                CONSTRAINT posts_fkey FOREIGN KEY (poster)
-                    REFERENCES users (username)
-                    ON UPDATE CASCADE
-                    ON DELETE CASCADE,
-                CONSTRAINT posts_fkey2 FOREIGN KEY (image)
-                    REFERENCES uploads (id)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT
             )
     """,
     """
@@ -68,6 +49,25 @@ INIT_STATEMENTS = [
             (   id SERIAL PRIMARY KEY,
                 filename character varying(100) NOT NULL,
                 data bytea NOT NULL
+            )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS posts
+            (   postid SERIAL PRIMARY KEY,
+                poster character varying(20) NOT NULL,
+                content character varying(400) NOT NULL,
+                date date,
+                "time" time without time zone,
+                title character varying(50) NOT NULL,
+                image integer NOT NULL,
+                CONSTRAINT posts_fkey FOREIGN KEY (poster)
+                    REFERENCES users (username)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+                CONSTRAINT posts_fkey2 FOREIGN KEY (image)
+                    REFERENCES uploads (id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
             )
     """,
     ##-------------------SERCAN--------------------##
