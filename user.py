@@ -8,7 +8,7 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
 #Enes
-def login():
+def login("/login", methods = ['POST']):
     _Username = request.form['username']
     _Password = request.form['password']
     try:
@@ -42,7 +42,7 @@ def login():
         connection.close()
 
 #Enes
-def register():
+def register("/register", methods = ['POST']):
     form = formRegister()
     _Username = form.username.data
     _Password = form.password.data
@@ -76,7 +76,7 @@ def register():
     return redirect(url_for('index'))
 
 #Enes
-def userpage():
+def userpage("/userpage"):
     if 'online' in session:
         refreshUserData()
         return RenderTemplate('userpage.html', profileActive='active')
@@ -84,7 +84,7 @@ def userpage():
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
 #Enes
-def logout():
+def logout("/logout"):
     if session['online'] == 1:
         session.clear()
         return redirect(url_for('index'))
@@ -92,7 +92,7 @@ def logout():
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
 #Enes
-def buycoins():
+def buycoins("/buycoins", methods = ['GET', 'POST']):
     if request.method == 'GET':
         return RenderTemplate('buycoins.html', coinActive='active')
     elif request.method == 'POST':
@@ -114,7 +114,7 @@ def buycoins():
             connection.close()
 
 #Enes
-def edituser():
+def edituser("/edituser", methods = ['GET', 'POST']):
     if refreshUserData():
         form = formEditUser()
         if request.method == 'GET':
@@ -151,7 +151,7 @@ def edituser():
                     connection.close()
 
 #Enes
-def forgotpassword():
+def forgotpassword("/forgotpassword", methods = ['GET', 'POST']):
     form = formForgotPass()
     refreshUserData()
     if 'Username' in session:
