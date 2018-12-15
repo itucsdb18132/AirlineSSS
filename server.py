@@ -17,6 +17,7 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
 
 
 #Sercan
+@app.route('/')
 def index():
     general.refreshUserData()
     _Datetime = datetime.datetime.now()
@@ -69,7 +70,7 @@ def create_app():
     app = Flask(__name__)
 
     #General Definitions
-    app.add_url_rule("/", view_func=index) #Sercan
+    #app.add_url_rule("/", view_func=index) #Sercan
     app.add_url_rule("/errorpage/<message>", view_func=general.errorpage) #Enes
     app.add_url_rule("/about", view_func=general.about) #Enes
     app.add_url_rule("/news", view_func=general.news) #Enes
