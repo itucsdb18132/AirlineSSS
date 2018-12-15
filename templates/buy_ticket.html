@@ -7,7 +7,7 @@
 
 
 <div class="blockcontainer">
-	<div class="blockcontainer-content">
+	<div class="blockcontainer-content container">
         {{ super() }}
         <p>You have selected flightno: {{ flightid }} </p>
         {% if emptyseatsforeco != 0 or emptyseatsforbsn != 0 %}
@@ -26,7 +26,7 @@
         {% if emptyseatsforbsn > 0 %}
         <input type="radio" name="class" value="B" checked="checked"> Business Class<br>
         {% endif %}
-        <button type="submit">Buy</button>
+        <button type="submit" class="btn dorne-btn my-3">Buy</button>
         </form>
         {% else %}
         <p>There are no empty seats for this flight</p>

@@ -1,0 +1,21 @@
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} Tickets {% endblock %}
+
+
+{% block content %}
+<div class="blockcontainer">
+	<div class="blockcontainer-content">
+        <div class="container">
+            <p>Dear {{fullname}} please select your seat number </p>
+            <select>
+                {% for i in emptyseats %}
+                <option value="{{empty_seats[i]}}">{{empty_seats[i]}}</option>
+            </select>
+            <button type="submit" class="btn dorne-btn">Buy</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

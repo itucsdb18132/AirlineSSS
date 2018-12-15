@@ -903,19 +903,21 @@ def check_in(flight_id, ticket_id):
             try:
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT class, COUNT(*) FROM tickets WHERE flight_id = '%s' AND username IS NULL
-                                    GROUP BY class
-
-                """ % flight_id
+                statement = """SELECT bsn_capacity, eco_capacity FROM tickets AS t
+                        INNER JOIN flights AS f ON f.flight_id = t.flight_id
+                        INNER JOIN planes AS p ON p.plane_id= f.plane_id
+                        WHERE t.flight_id = '%s' AND t.ticket_id = '%s'
+                        """ % flight_id, ticket_id
                 cursor.execute(statement)
-                rows = cursor.fetchall()
-                emptyseatsforeco = 0
-                emptyseatsforbsn = 0
-                for row in rows:
-                    if row[0] == 'E':
-                        emptyseatsforeco = row[1]
-                    elif row[0] == 'B':
-                        emptyseatsforbsn = row[1]
+                rows = cursor.fetchone()
+                flid = row[0]
+                tcid = row[1]
+                usn = row[2]
+                cls = row[3]
+                if row[3] == 'E':
+                    emptyseatsforeco = row[1]
+                elif row[3] == 'B':
+                    emptyseatsforbsn = row[1]
 
                 statement = """SELECT class, MIN(price) FROM tickets WHERE flight_id = '%s' AND username IS NULL
                                                     GROUP BY class
