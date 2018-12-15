@@ -9,6 +9,7 @@ import datetime
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
+#Enes
 def adm_sendpost():
     refreshUserData()
     if ifAdmin():
@@ -46,6 +47,7 @@ def adm_sendpost():
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
+#Enes
 def adm_pymreqs():
     refreshUserData()
     if ifAdmin():
@@ -99,6 +101,7 @@ def adm_pymreqs():
             finally:
                 connection.close()
 
+#Enes
 def deleteuser(username):
     if ifAdmin():
         try:
@@ -121,12 +124,14 @@ def deleteuser(username):
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
+#Enes
 def adminpage():
     if ifAdmin():
         return RenderTemplate('adminpage.html', adminActive='active')
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
+#Enes
 def adm_users():
     if ifAdmin():
         try:
@@ -146,6 +151,7 @@ def adm_users():
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
+#Enes
 def updateuser(username):
     if ifAdmin():
         try:
@@ -164,6 +170,7 @@ def updateuser(username):
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
+#Enes
 def adm_updateuser(username):
     if ifAdmin():
         try:
@@ -200,6 +207,7 @@ def adm_updateuser(username):
     else:
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
+#Sercan
 def adm_updateflight():
     refreshUserData()
     if ifAdmin():
@@ -253,6 +261,8 @@ def adm_updateflight():
 
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+#Sercan
 def adm_deleteflight():
     if ifAdmin():
         refreshUserData()
@@ -280,3 +290,33 @@ def adm_deleteflight():
 
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
+
+#Enes
+def adm_fabrika_ayarlari():
+    if ifAdmin():
+        try:
+            connection = dbapi2.connect(dsn)
+            cursor = connection.cursor()
+            INIT_STATEMENTS = [ """DROP TABLE tickets"""
+            , """DROP TABLE flights"""
+            , """DROP TABLE airports"""
+            , """DROP TABLE cities"""
+            , """DROP TABLE planes"""
+            , """DROP TABLE posts"""
+            , """DROP TABLE payments"""
+            , """DROP TABLE person"""
+            , """DROP TABLE uploads"""
+            , """DROP TABLE users""" ]
+            for statement in INIT_STATEMENTS:
+                cursor.execute(statement)
+            connection.commit()
+
+            return redirect(url_for('adminpage'))
+        except dbapi2.DatabaseError as e:
+            connection.rollback()
+            return str(e)
+        finally:
+            connection.close()
+
+    else:
+        return redirect(url_for('errorpage', message='Not Authorized!'))

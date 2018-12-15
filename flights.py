@@ -5,6 +5,7 @@ from general import RenderTemplate, refreshUserData, ifAdmin
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
+#Sercan
 def searchList():
     departure = request.form['from']
     destination = request.form['to']
@@ -30,6 +31,7 @@ def searchList():
     finally:
         connection.close()
 
+#Sercan
 def flights():
 
         try:
@@ -52,6 +54,7 @@ def flights():
         finally:
             connection.close()
 
+#Sercan
 def roundFlight():
     departure = request.form['from']
     destination = request.form['to']
@@ -89,6 +92,7 @@ def roundFlight():
     finally:
         connection.close()
 
+#Sercan
 def addPlane():
     refreshUserData()
     if ifAdmin():
@@ -118,6 +122,7 @@ def addPlane():
     else:
         return redirect(url_for('errorpage', message='Not Authorized!'))
 
+#Sercan
 def discount():
     if ifAdmin():
         refreshUserData()

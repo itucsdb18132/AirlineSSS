@@ -7,6 +7,7 @@ import mailsender
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
+#Enes
 def login():
     _Username = request.form['username']
     _Password = request.form['password']
@@ -40,6 +41,7 @@ def login():
     finally:
         connection.close()
 
+#Enes
 def register():
     form = formRegister()
     _Username = form.username.data
@@ -73,6 +75,7 @@ def register():
         flash(form.errors[error][0])
     return redirect(url_for('index'))
 
+#Enes
 def userpage():
     if 'online' in session:
         refreshUserData()
@@ -80,6 +83,7 @@ def userpage():
     else:
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
+#Enes
 def logout():
     if session['online'] == 1:
         session.clear()
@@ -87,6 +91,7 @@ def logout():
     else:
         return redirect(url_for('errorpage', message = 'You need to log in first!'))
 
+#Enes
 def buycoins():
     if request.method == 'GET':
         return RenderTemplate('buycoins.html', coinActive='active')
@@ -108,6 +113,7 @@ def buycoins():
         finally:
             connection.close()
 
+#Enes
 def edituser():
     if refreshUserData():
         form = formEditUser()
@@ -116,19 +122,35 @@ def edituser():
         else:
             if form.validate_on_submit():
                 newFullname = form.fullname.data
-                newEmain = form.email.data
+                newEmail = form.email.data
                 newPassword = form.password.data
                 try:
+                    if newFullname == '':
+                        newFullname = session['Fullname']
+                    if newEmail == '':
+                        newEmail = session['Email']
+
                     connection = dbapi2.connect(dsn)
                     cursor = connection.cursor()
                     statement = """
+                        UPDATE person SET fullname = %s, emailaddress = %s WHERE username = %s
                     """
+                    cursor.execute(statement, (newFullname, newEmail, session['Username']))
+                    if newPassword != '':
+                        statement = """
+                            UPDATE users SET password = %s WHERE username = %s
+                        """
+                        cursor.execute(statement, (newPassword, session['Username']))
+                    connection.commit()
+                    flash('You have successfully updated your profile')
+                    return redirect(url_for('userpage'))
                 except dbapi2.DatabaseError as e:
                     connection.rollback()
                     return redirect(url_for('error_page', str(e)))
                 finally:
                     connection.close()
 
+#Enes
 def forgotpassword():
     form = formForgotPass()
     refreshUserData()

@@ -6,6 +6,7 @@ import decimal
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
+#Said
 def buy_ticket(flight_id):
     if 'Username' in session:
         refreshUserData()
@@ -95,6 +96,7 @@ def buy_ticket(flight_id):
     else:
         return redirect(url_for('errorpage', message = 'Please log in first'))
 
+#Said
 def create_tickets(flight_id, eco_first_ticket_price):
     ecoticketid = 1
     bsnticketid = 1
@@ -138,6 +140,7 @@ def create_tickets(flight_id, eco_first_ticket_price):
     else:
         return redirect(url_for('errorpage', message='Please log in first'))
 
+#Said
 def view_tickets():
     if 'Username' in session:
         refreshUserData()
@@ -162,7 +165,7 @@ def view_tickets():
     else:
         return redirect(url_for('errorpage', message='Please log in first'))
 
-@app.route('/check_in', methods=['GET', 'POST'])
+#Said
 def check_in():
     if 'Username' in session:
         refreshUserData()
