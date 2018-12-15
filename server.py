@@ -1,7 +1,7 @@
 from flask import Flask
 import admin
 import flights
-import general
+from general import index, errorpage, about, news
 import tickets
 import user
 
@@ -21,10 +21,10 @@ def create_app():
     app = Flask(__name__)
 
     #General Definitions
-    app.add_url_rule("/", view_func=general.index) #Sercan
-    app.add_url_rule("/errorpage/<message>", view_func=general.errorpage) #Enes
-    app.add_url_rule("/about", view_func=general.about) #Enes
-    app.add_url_rule("/news", view_func=general.news) #Enes
+    app.add_url_rule("/", view_func=index) #Sercan
+    app.add_url_rule("/errorpage/<message>", view_func=errorpage) #Enes
+    app.add_url_rule("/about", view_func=about) #Enes
+    app.add_url_rule("/news", view_func=news) #Enes
 
     #Admin Definitions
     app.add_url_rule("/adm_sendpost", view_func=admin.adm_sendpost, methods = ['GET', 'POST']) #Enes
