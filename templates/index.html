@@ -136,7 +136,8 @@
 						<!-- Single Features Area -->
 						{% if discount %}
 							{% for disc in discount %}
-						<div class="single-features-area">
+						<div class="single-features-area" onclick="window.location = '/buy_ticket/{{ disc[1] }}'">
+							<a href = "/buy_ticket/{{ disc[1] }}">
 							<img src="../static/img/bg-img/iconn.gif" alt="">
 							<!-- Price -->
 							<div class="price-start">
@@ -146,12 +147,16 @@
 								<div class="feature-title">
 									<h5>{{ disc[2] }} - {{ disc[3] }}</h5>
 									<p>Flight id: {{ disc[1] }}</p>
+
 								</div>
 								<div class="feature-favourite">
 									<a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
 								</div>
 							</div>
+							</a>
 						</div>
+
+
 							{% endfor %}
 						{% endif %}
 					</div>
