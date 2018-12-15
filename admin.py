@@ -253,3 +253,30 @@ def adm_updateflight():
 
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
+def adm_deleteflight():
+    if ifAdmin():
+        refreshUserData()
+        if request.method == 'GET':
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
+
+                                            INNER JOIN airports AS a ON f.departure_id = a.airport_id
+                                            INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
+                                            INNER JOIN planes AS p ON f.plane_id = p.plane_id
+                                            INNER JOIN cities AS c ON a.city_id = c.city_id
+                                            INNER JOIN cities AS c2 ON a2.city_id = c2.city_id
+                                        """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+
+                return RenderTemplate('amd_deleteflight.html', flights=rows, flightsActive='active')
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
+
+    else:
+        return redirect(url_for('errorpage', message = 'Not Authorized!'))

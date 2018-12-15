@@ -27,6 +27,7 @@ def create_app():
     app.add_url_rule("/adm_sendpost", view_func=admin.adm_sendpost, methods = ['GET', 'POST'])
     app.add_url_rule("/adm_pymreqs", view_func=admin.adm_pymreqs, methods = ['GET', 'POST'])
     app.add_url_rule("/adm_updateflight", view_func=admin.adm_updateflight, methods = ['GET', 'POST'])
+    app.add_url_rule("/adm_deleteflight", view_func=admin.adm_deleteflight, methods=['GET', 'POST'])
     app.add_url_rule("/deleteuser/<username>", view_func=admin.deleteuser, methods = ['POST'])
     app.add_url_rule("/adm_updateuser/<username>", view_func=admin.adm_updateuser, methods = ['POST'])
     app.add_url_rule("/adm_users/<username>", view_func=admin.updateuser)
