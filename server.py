@@ -5,6 +5,7 @@ import mailsender
 from werkzeug.utils import secure_filename
 from forms import *
 import decimal
+from dbinit import INIT_STATEMENTS
 from base64 import b64encode
 
 app = Flask(__name__)
@@ -810,7 +811,7 @@ def adm_fabrika_ayarlari():
         try:
             connection = dbapi2.connect(dsn)
             cursor = connection.cursor()
-            INIT_STATEMENTS = [ """DROP TABLE tickets"""
+            DROP_STATEMENTS = [ """DROP TABLE tickets"""
             , """DROP TABLE flights"""
             , """DROP TABLE airports"""
             , """DROP TABLE cities"""
@@ -820,6 +821,9 @@ def adm_fabrika_ayarlari():
             , """DROP TABLE person"""
             , """DROP TABLE uploads"""
             , """DROP TABLE users""" ]
+            for statement in DROP_STATEMENTS:
+                cursor.execute(statement)
+            connection.commit()
             for statement in INIT_STATEMENTS:
                 cursor.execute(statement)
             connection.commit()
