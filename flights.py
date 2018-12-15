@@ -140,7 +140,6 @@ def discount():
                                         """
                 cursor.execute(statement)
                 rows = cursor.fetchall()
-
                 return RenderTemplate('discount.html', flights=rows, flightsActive='active')
             except dbapi2.DatabaseError as e:
                 connection.rollback()

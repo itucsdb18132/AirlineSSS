@@ -270,8 +270,9 @@ def adm_deleteflight():
             try:
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name, c2.city, f.departure_time, f.arrival_time FROM flights AS f
-
+                statement = """SELECT f.flight_id,a.airport_name, c.city, a2.airport_name,
+                                        c2.city, f.departure_time, f.arrival_time 
+                                    FROM flights AS f
                                             INNER JOIN airports AS a ON f.departure_id = a.airport_id
                                             INNER JOIN airports AS a2 ON f.destination_id = a2.airport_id
                                             INNER JOIN planes AS p ON f.plane_id = p.plane_id
@@ -281,13 +282,35 @@ def adm_deleteflight():
                 cursor.execute(statement)
                 rows = cursor.fetchall()
 
-                return RenderTemplate('amd_deleteflight.html', flights=rows, flightsActive='active')
+                return RenderTemplate('adm_deleteflight.html', flights=rows, flightsActive='active')
             except dbapi2.DatabaseError as e:
                 connection.rollback()
                 return str(e)
             finally:
                 connection.close()
+        else:
+            try:
+                _id = request.form['id']
 
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ DELETE FROM tickets  
+                                    WHERE flight_id = %s
+                                    """ % _id
+                cursor.execute(statement)
+                connection.commit()
+                statement = """ DELETE FROM flights 
+                                        WHERE flight_id = %s
+                                """ % _id
+                cursor.execute(statement)
+                connection.commit()
+                flash('You have successfully deleted a flight.')
+                return redirect(url_for('flights'))
+            except dbapi2.DatabaseError as e:
+                connection.rollback()
+                return str(e)
+            finally:
+                connection.close()
     else:
         return redirect(url_for('errorpage', message = 'Not Authorized!'))
 
