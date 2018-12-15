@@ -8,6 +8,8 @@ from base64 import b64encode
 
 app = Flask(__name__)
 app.debug = True
+app.secret_key = "pnBM(@?&#p]l~eI%L&$@#9f)T^uK7U"
+WTF_CSRF_SECRET_KEY = "N4<*$83/[[{)ZO&X2yL_qN68+{;;Xo"
 
 dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489dfb1be1648833f8ea853a1e32f4'
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
@@ -1126,9 +1128,4 @@ def check_in():
 
 #return app
 if __name__ == "__main__":
-    #app = create_app()
-    app.config.update(dict(
-    SECRET_KEY="pnBM(@?&#p]l~eI%L&$@#9f)T^uK7U",
-    WTF_CSRF_SECRET_KEY="N4<*$83/[[{)ZO&X2yL_qN68+{;;Xo"
-    ))
     app.run()
