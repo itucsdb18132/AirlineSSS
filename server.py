@@ -166,7 +166,7 @@ def addPlane():
                                         """
                 cursor.execute(statement, (planeid, planemodel, bsncap, ecocap))
                 connection.commit()
-
+                flash('You have succesfully added a plane.')
                 return RenderTemplate('addPlane.html', adminActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
@@ -175,6 +175,79 @@ def addPlane():
                 connection.close()
         else:
             return RenderTemplate('addPlane.html')
+
+    else:
+        return redirect(url_for('errorpage', message='Not Authorized!'))
+
+@app.route("/add_city", methods = ['GET', 'POST'])
+def add_city():
+    refreshUserData()
+    if ifAdmin():
+        if request.method == 'POST':
+            city_id = request.form['city_id']
+            city = request.form['city']
+
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ INSERT INTO cities (city_id, city)
+                                                VALUES (%s, %s)
+                                        """
+                cursor.execute(statement, (city_id, city))
+                connection.commit()
+                flash('You have succesfully added a city.')
+                return RenderTemplate('addCity.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+        else:
+            return RenderTemplate('addCity.html')
+
+    else:
+        return redirect(url_for('errorpage', message='Not Authorized!'))
+
+@app.route("/add_airport", methods = ['GET', 'POST'])
+def add_airport():
+    refreshUserData()
+    if ifAdmin():
+        if request.method == 'POST':
+            airport_id = request.form['airport_id']
+            airport_name = request.form['airport_name']
+            city_id = request.form['city_id']
+
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """ INSERT INTO airports (airport_id, airport_name, city_id)
+                                                VALUES (%s, %s, %s)
+                                        """
+                cursor.execute(statement, (airport_id, airport_name, city_id))
+                connection.commit()
+                flash('You have succesfully added a airport.')
+                return RenderTemplate('addAirport.html', adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
+        else:
+            try:
+                connection = dbapi2.connect(dsn)
+                cursor = connection.cursor()
+                statement = """SELECT  * FROM cities
+                """
+                cursor.execute(statement)
+                rows = cursor.fetchall()
+
+
+                return RenderTemplate('addAirport.html', cities=rows, adminActive='active')
+            except dbapi2.DatabaseError:
+                connection.rollback()
+                return "Hata2!"
+            finally:
+                connection.close()
 
     else:
         return redirect(url_for('errorpage', message='Not Authorized!'))

@@ -1,0 +1,36 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+         <form action="{{url_for('add_airport')}}" method="POST">
+
+            <div class="form-group">
+                <label for="airport_id">Airport ID</label>
+                <input type="text" name="airport_id" ><br>
+            </div>
+            <div class="form-group">
+                <label for="airport_name">Airport Name</label>
+                <input type="text" name="airport_name" ><br>
+            </div>
+             <select class="custom-select" name="city_id">
+                <option selected>City</option>
+                {% for city in cities %}
+                    <option value="{{city[0]}}">{{city[1]}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <button type="submit" > Add</button>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
