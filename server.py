@@ -14,11 +14,19 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
 
+@app.route('/')
+def index():
+    return "Deneme"
+
+
+
+
+
 def create_app():
     app = Flask(__name__)
 
     #General Definitions
-    app.add_url_rule("/", view_func=general.index) #Sercan
+    #app.add_url_rule("/", view_func=general.index) #Sercan
     app.add_url_rule("/errorpage/<message>", view_func=general.errorpage) #Enes
     app.add_url_rule("/about", view_func=general.about) #Enes
     app.add_url_rule("/news", view_func=general.news) #Enes
