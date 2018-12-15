@@ -9,12 +9,33 @@
 <div class="blockcontainer">
 	<div class="blockcontainer-content">
         <div class="container">
-            <p>Dear {{fullname}} please select your seat number </p>
-            <select>
-                {% for i in emptyseats %}
-                <option value="{{empty_seats[i]}}">{{empty_seats[i]}}</option>
-            </select>
-            <button type="submit" class="btn dorne-btn">Buy</button>
+            <p class="text-center">Dear {{fullname}} please select your seat number </p>
+            <form action="{{ url_for('check_in') }}?fId={{ flightID }}&tId={{ ticketID }}" method="POST">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3">
+                        </div>
+                        <div class="col-lg-6">
+                            <select name="seat" class="custom-select form-control">
+                                {% for seat in emptyseats %}
+                                <option value="{{ seat[0] }}">{{ seat[0] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn dorne-btn btn-block">Check-In</button>
+                    </div>
+                    <div class="col-lg-3">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

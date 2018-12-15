@@ -35,8 +35,8 @@
                         <td>{{ticket[5]}}</td>
                         <td>{{ticket[6]}}</td>
                         <td>{{ticket[7]}}</td>
-                        {% if ticket[2] != 'None' %}
-                        <td><a href="{{ url_for('check_in', flight_id = ticket[0], ticket_id = ticket[1]) }}" class="btn dorne-btn">Click to check-in</a></td>
+                        {% if not ticket[2] %}
+                        <td><a href="{{ url_for('check_in') }}?fId={{ ticket[0] }}&tId={{ ticket[1] }}" class="btn dorne-btn">Click to check-in</a></td>
                         {% else %}
                         <td>Ticket is already checked-in</td>
                         {% endif %}
