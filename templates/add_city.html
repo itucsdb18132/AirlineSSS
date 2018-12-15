@@ -1,0 +1,26 @@
+
+{% extends "masterpage.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block title %} ADMIN PANEL {% endblock %}
+{% block content %}
+
+
+<div class="blockcontainer">
+    <div class="blockcontainer-content">
+         <form action="{{url_for('adm_addcity')}}" method="POST">
+
+
+               <input type="radio" name="city_id" ><br>
+             <input type="radio" name="city" ><br>
+            <br>
+
+            <button type="submit" > Delete</button>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

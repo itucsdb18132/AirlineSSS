@@ -7,6 +7,7 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
          host='ec2-54-247-101-191.eu-west-1.compute.amazonaws.com' port=5432 dbname='d1lo8nienmd3cn'"""
 
 #Said
+@app_route("/buy_ticket/<int:flight_id>", methods = ['GET', 'POST'])
 def buy_ticket(flight_id):
     if 'Username' in session:
         refreshUserData()
@@ -97,6 +98,7 @@ def buy_ticket(flight_id):
         return redirect(url_for('errorpage', message = 'Please log in first'))
 
 #Said
+
 def create_tickets(flight_id, eco_first_ticket_price):
     ecoticketid = 1
     bsnticketid = 1
@@ -141,6 +143,7 @@ def create_tickets(flight_id, eco_first_ticket_price):
         return redirect(url_for('errorpage', message='Please log in first'))
 
 #Said
+@app_route("/tickets")
 def view_tickets():
     if 'Username' in session:
         refreshUserData()
@@ -166,6 +169,7 @@ def view_tickets():
         return redirect(url_for('errorpage', message='Please log in first'))
 
 #Said
+@app_route("/check_in", methods = ['GET', 'POST'])
 def check_in():
     if 'Username' in session:
         refreshUserData()
