@@ -162,90 +162,83 @@ def view_tickets():
     else:
         return redirect(url_for('errorpage', message='Please log in first'))
 
-def check_in(flight_id, ticket_id):
+@app.route('/check_in', methods=['GET', 'POST'])
+def check_in():
     if 'Username' in session:
         refreshUserData()
         if request.method == 'GET':
             try:
+                flight_id = request.args['fId']
+                ticket_id = request.args['tId']
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT class, COUNT(*) FROM tickets WHERE flight_id = '%s' AND username IS NULL
-                                    GROUP BY class
+                statement = """
+                    SELECT ticket_id FROM tickets
+                        WHERE flight_id = %s
+                          AND ticket_id = %s
+                          AND username  = %s
+                """
+                cursor.execute(statement, (flight_id, ticket_id, session['Username']))
+                if cursor.rowcount != 1:
+                    return redirect(url_for('errorpage', message="Ticket not found!"))
+                statement = """
+                    SELECT ticket_id FROM tickets
+                        WHERE flight_id = %s
+                          AND seat_number IS NULL
+                          AND class = (SELECT class FROM tickets
+                                        WHERE flight_id = %s
+                                          AND ticket_id = %s)
+                    ORDER BY ticket_id ASC
+                """
+                cursor.execute(statement, (flight_id, flight_id, ticket_id))
+                emptyseats = cursor.fetchall()
+                return RenderTemplate('check_in.html', fullname=session['Fullname'], emptyseats=emptyseats, flightID=flight_id, ticketID=ticket_id)
 
-                """ % flight_id
-                cursor.execute(statement)
-                rows = cursor.fetchall()
-                emptyseatsforeco = 0
-                emptyseatsforbsn = 0
-                for row in rows:
-                    if row[0] == 'E':
-                        emptyseatsforeco = row[1]
-                    elif row[0] == 'B':
-                        emptyseatsforbsn = row[1]
-
-                statement = """SELECT class, MIN(price) FROM tickets WHERE flight_id = '%s' AND username IS NULL
-                                                    GROUP BY class
-
-                                """ % flight_id
-                cursor.execute(statement)
-                rows = cursor.fetchall()
-                priceforeco = 0
-                priceforbsn = 0
-                for row in rows:
-                    if row[0] == 'E':
-                        priceforeco = row[1]
-                    elif row[0] == 'B':
-                        priceforbsn = row[1]
-
-                return RenderTemplate('buy_ticket.html', flightid = flight_id, balance = session['Balance'], emptyseatsforeco = emptyseatsforeco, emptyseatsforbsn =emptyseatsforbsn, priceforeco = priceforeco, priceforbsn = priceforbsn, flightsActive='active')
             except dbapi2.DatabaseError:
                 connection.rollback()
                 return "Hata!"
             finally:
                 connection.close()
-        elif request.method == 'POST':
+        else:
             try:
-                classtype = request.form['class']
-                session['Username']
+                flight_id = request.args['fId']
+                ticket_id = request.args['tId']
                 connection = dbapi2.connect(dsn)
                 cursor = connection.cursor()
-                statement = """SELECT ticket_id, price from tickets
-                                    WHERE ticket_id = (SELECT MIN(ticket_id)
-                                        FROM tickets WHERE flight_id = %s AND username IS NULL AND class = %s)
-                                            AND flight_id = %s
-                  """
-                cursor.execute(statement, (flight_id, classtype, flight_id))
-                row = cursor.fetchone()
-                ticketid = row[0]
-                ticketprice = row[1]
-                if ticketprice <= decimal.Decimal(session['Balance']):
-                    statement = """UPDATE tickets
-                                        SET username = %s
-                                            WHERE ticket_id = %s
-                                                AND flight_id = %s
+                statement = """
+                    SELECT ticket_id FROM tickets
+                        WHERE flight_id = %s
+                          AND ticket_id = %s
+                          AND username  = %s
+                """
+                cursor.execute(statement, (flight_id, ticket_id, session['Username']))
+                if cursor.rowcount != 1:
+                    return redirect(url_for('errorpage', message = "Ticket not found!"))
 
+                seat_number = request.form['seat']
+                statement = """
+                    SELECT ticket_id FROM tickets
+                        WHERE flight_id = %s
+                          AND ticket_id = %s
+                          AND seat_number  = %s
+                """
+                cursor.execute(statement, (flight_id, ticket_id, seat_number))
+                if cursor.rowcount > 0:
+                    flash("Seat already taken!")
+                    return redirect(url_for('view_tickets'))
+                statement = """
+                    UPDATE tickets SET seat_number = %s
+                        WHERE flight_id = %s
+                          AND ticket_id = %s
+                """
+                cursor.execute(statement, (seat_number, flight_id, ticket_id))
+                connection.commit()
+                flash("You have successfully checked-in")
+                return redirect(url_for('view_tickets'))
 
-                                    """
-                    cursor.execute(statement, (session['Username'], ticketid, flight_id))
-                    statement = """UPDATE person
-                                        SET balance = balance-%s
-                                            WHERE username = %s
-
-
-                                    """
-                    cursor.execute(statement,(ticketprice, session['Username']))
-                    connection.commit()
-                    refreshUserData()
-                    flash('Ticket has been bought successfully. Your new balance is %s SCoins' % session['Balance'])
-
-                    return redirect(url_for('index'))
-                else:
-                    flash('Your balance is not enough!')
-                    return redirect(url_for('buycoins'))
-
-            except dbapi2.DatabaseError as e:
+            except dbapi2.DatabaseError:
                 connection.rollback()
-                return str(e)
+                return "Hata!"
             finally:
                 connection.close()
     else:

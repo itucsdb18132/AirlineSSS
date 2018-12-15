@@ -43,7 +43,7 @@ def create_app():
     #Tickets Definitions
     app.add_url_rule("/tickets", view_func=tickets.view_tickets)
     app.add_url_rule("/buy_ticket/<int:flight_id>", view_func=tickets.buy_ticket, methods = ['GET', 'POST'])
-    app.add_url_rule("/check_in/<int:flight_id><int:ticket_id>", view_func=tickets.check_in, methods = ['GET', 'POST'])
+    app.add_url_rule("/check_in", view_func=tickets.check_in, methods = ['GET', 'POST'])
 
     #User Definitons
     app.add_url_rule("/login", view_func=user.login, methods = ['POST'])
