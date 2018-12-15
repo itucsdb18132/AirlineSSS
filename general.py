@@ -11,14 +11,18 @@ dsn = """user='kbktqbcfmdxpbw' password='76006678dc4edef0501db56d75112cacde489df
 def RenderTemplate(template, **context):
     context['registerForm'] = formRegister()
     return render_template(template, **context)
+
+@app.route('/errorpage/<message>')
 def errorpage(message):
     return  RenderTemplate('errorpage.html', message = message)
 
 #Enes
+@app.route('/about')
 def about():
     return RenderTemplate('about.html', aboutActive='active')
 
 #Enes
+@app.route('/news')
 def news():
     connection = dbapi2.connect(dsn)
     cursor = connection.cursor()
