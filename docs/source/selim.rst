@@ -80,3 +80,27 @@ B - Posts Table Create Statement
 	   :caption: Posts Table
 	   :name: Posts
 	   :lines: 55-71
+
+*Uploads Table*
+---------------
+
+A - Fields of Posts Table
+^^^^^^^^^^^^^^^^^^^^^^^^^
+	
+	===========	========	==================	===========	================
+	FIELD NAME	TYPE		DETAILS				PRIMARY KEY	FOREIGN KEY REF.
+	===========	========	==================	===========	================
+	ID			SERIAL		Post ID				X			
+	FILENAME	VARCHAR		Filename			
+	DATA		BYTEA		Binary data			
+	===========	========  	==================	===========	================
+
+	
+B - Posts Table Create Statement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	.. literalinclude:: /../../dbinit.py
+	   :language: sql
+	   :linenos:
+	   :caption: Posts Table
+	   :name: Posts
+	   :lines: 48-52
