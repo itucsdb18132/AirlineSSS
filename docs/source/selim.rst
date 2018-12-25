@@ -18,7 +18,7 @@ Person Table
 	===========	=========  	=======================	===========	================
 
 	
-*1. Person Table Create Statement*
+*2. Person Table Create Statement*
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
