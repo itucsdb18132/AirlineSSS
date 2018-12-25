@@ -4,7 +4,7 @@ Tables Implemented by Selim Enes Kılıçaslan
 *Person Table*
 --------------
 
-* Fields of Person Table
+- Fields of Person Table
 ^^^^^^^^^^^^^^^^^^^^^^^^
 	
 	============	=========	====================	===========	================
@@ -18,7 +18,7 @@ Tables Implemented by Selim Enes Kılıçaslan
 	============	=========  	====================	===========	================
 
 	
-* Person Table Create Statement
+- Person Table Create Statement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
