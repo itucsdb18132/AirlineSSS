@@ -2,10 +2,10 @@ Parts Implemented by Muhammed Said Dikici
 =========================================
 
 Tickets Table
-------------
+--------------
 
 Fields of Tickets Table
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 	
 ===========	=========	=======================	===========	================
 FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
