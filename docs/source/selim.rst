@@ -4,8 +4,8 @@ Tables Implemented by Selim Enes Kılıçaslan
 *Person Table*
 --------------
 
-*  Fields of Person Table
-^^^^^^^^^^^^^^^^^^^^^^^^^
+* Fields of Person Table
+^^^^^^^^^^^^^^^^^^^^^^^^
 	
 	============	=========	====================	===========	================
 	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
@@ -18,8 +18,8 @@ Tables Implemented by Selim Enes Kılıçaslan
 	============	=========  	====================	===========	================
 
 	
-*  Person Table Create Statement
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* Person Table Create Statement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
 	   :linenos:
