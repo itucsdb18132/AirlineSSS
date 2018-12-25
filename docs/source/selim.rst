@@ -7,7 +7,7 @@ Tables Implemented by Selim Enes Kılıçaslan
 *  Fields of Person Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 	
--	============	=========	====================	===========	================
+	============	=========	====================	===========	================
 	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
 	============	=========	====================	===========	================
 	USERNAME	VARCHAR		Username		X		USERS
@@ -20,7 +20,7 @@ Tables Implemented by Selim Enes Kılıçaslan
 	
 *  Person Table Create Statement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--	.. literalinclude:: /../../dbinit.py
+	.. literalinclude:: /../../dbinit.py
 	   :language: sql
 	   :linenos:
 	   :caption: Person Table
