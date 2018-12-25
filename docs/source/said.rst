@@ -4,8 +4,8 @@ Tables Implemented by Muhammed Said Dikici
 TICKETS TABLE
 -------------
 
-1.	Fields of Tickets Table
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*1.	Fields of Tickets Table*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		
 	===========	=========	=======================	===========	================
 	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
@@ -21,8 +21,8 @@ TICKETS TABLE
 	===========	=========  	=======================	===========	================
 
 	
-2.	Tickets Table Create Statement
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*2.	Tickets Table Create Statement*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
 	   :linenos:
