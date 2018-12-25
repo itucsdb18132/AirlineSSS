@@ -13,8 +13,8 @@ Person Table
 	USERNAME	VARCHAR		Username		X		USERS
 	FULLNAME	VARCHAR		User's fullname		X	
 	EMAILADDRESS	VARCHAR		User's email address			
-	USERROLE		CHARACTER		Admin or User		 			
-	BALANCE		NUMERIC	Balance		 			
+	USERROLE	CHARACTER	Admin or User		 			
+	BALANCE		NUMERIC		Balance		 			
 	===========	=========  	=======================	===========	================
 
 	
