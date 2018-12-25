@@ -1,10 +1,10 @@
-Parts Implemented by Muhammed Said Dikici
-=========================================
+Tables Implemented by Muhammed Said Dikici
+==========================================
 
 Tickets Table
 --------------
 
-Fields of Tickets Table
+#. Fields of Tickets Table
 ^^^^^^^^^^^^^^^^^^^^^^^^
 	
 ===========	=========	=======================	===========	================
@@ -21,10 +21,10 @@ BASE_PRICE	NUMERIC		Price without discount
 ===========	=========  	=======================	===========	================
 
 	
-TICKETS TABLE CREATE CODE
-^^^^^^^^^^^^^^^^^^^^^^^^^
+#. Tickets Table Create Statement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. literalinclude:: /../../dbinit.py
-   :language: python
+   :language: sql
    :linenos:
    :caption: Tickets Table
    :name: Tickets
