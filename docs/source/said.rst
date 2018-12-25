@@ -1,8 +1,8 @@
 Tables Implemented by Muhammed Said Dikici
 ==========================================
 
-Tickets Table
---------------
+TICKETS TABLE
+-------------
 
 1.	Fields of Tickets Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
