@@ -4,7 +4,7 @@ Tables Implemented by Muhammed Said Dikici
 Tickets Table
 --------------
 
-#.	Fields of Tickets Table
+1.	Fields of Tickets Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		
 	===========	=========	=======================	===========	================
@@ -21,7 +21,7 @@ Tickets Table
 	===========	=========  	=======================	===========	================
 
 	
-#.	Tickets Table Create Statement
+2.	Tickets Table Create Statement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
