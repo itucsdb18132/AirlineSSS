@@ -11,7 +11,7 @@ Tables Implemented by Selim Enes Kılıçaslan
 	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
 	============	=========	====================	===========	================
 	USERNAME	VARCHAR		Username		X		USERS
-	FULLNAME	VARCHAR		User's fullname		X	
+	FULLNAME	VARCHAR		User's fullname			
 	EMAILADDRESS	VARCHAR		User's email address			
 	USERROLE	CHARACTER	Admin or User		 			
 	BALANCE		NUMERIC		Balance		 			
