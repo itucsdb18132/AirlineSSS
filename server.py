@@ -711,7 +711,7 @@ def adm_users():
         return redirect(url_for('errorpage', message = 'You are not authorized!'))
 
 #Enes
-@app.route("/adm_updateuser/<username>")
+@app.route("/adm_updateuser/<username>", methods=['GET','POST'])
 def updateuser(username):
     if ifAdmin():
         try:
