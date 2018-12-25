@@ -5,7 +5,7 @@ Tickets Table
 --------------
 
 #.	Fields of Tickets Table
-	^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		
 	===========	=========	=======================	===========	================
 	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
@@ -22,7 +22,7 @@ Tickets Table
 
 	
 #.	Tickets Table Create Statement
-	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	.. literalinclude:: /../../dbinit.py
 	   :language: sql
 	   :linenos:
