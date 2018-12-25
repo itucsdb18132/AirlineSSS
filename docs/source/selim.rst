@@ -34,10 +34,10 @@ A - Fields of Payments Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	
 	===========	=========	===================	===========	================
-	FIELD NAME	TYPE		DETAILS				PRIMARY KEY	FOREIGN KEY REF.
+	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
 	===========	=========	===================	===========	================
-	PAYMENTID	SERIAL		Payment ID			X			
-	USERNAME	VARCHAR		Username						USERS
+	PAYMENTID	SERIAL		Payment ID		X			
+	USERNAME	VARCHAR		Username				USERS
 	AMOUNT		NUMERIC		Requested amount			
 	APPROVED	CHARACTER	Request status		 			
 	APPROVED_BY	NUMERIC		Request approved by		 			
