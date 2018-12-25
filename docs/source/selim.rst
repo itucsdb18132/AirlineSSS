@@ -87,13 +87,13 @@ B - Posts Table Create Statement
 A - Fields of Posts Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 	
-	===========	========	==================	===========	================
-	FIELD NAME	TYPE		DETAILS				PRIMARY KEY	FOREIGN KEY REF.
-	===========	========	==================	===========	================
-	ID			SERIAL		Post ID				X			
-	FILENAME	VARCHAR		Filename			
-	DATA		BYTEA		Binary data			
-	===========	========  	==================	===========	================
+	===========	=======	===========	===========	================
+	FIELD NAME	TYPE	DETAILS		PRIMARY KEY	FOREIGN KEY REF.
+	===========	=======	===========	===========	================
+	ID		SERIAL	Post ID		X			
+	FILENAME	VARCHAR	Filename			
+	DATA		BYTEA	Binary data			
+	===========	======= ===========	===========	================
 
 	
 B - Posts Table Create Statement
