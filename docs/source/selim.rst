@@ -59,17 +59,17 @@ B - Payments Table Create Statement
 A - Fields of Posts Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 	
-	===========	=========	===================	===========	================
-	FIELD NAME	TYPE		DETAILS				PRIMARY KEY	FOREIGN KEY REF.
-	===========	=========	===================	===========	================
-	POSTID		SERIAL		Post ID				X			
-	POSTER		VARCHAR		Username of poster				USERS-USERNAME
+	===========	========	==================	===========	================
+	FIELD NAME	TYPE		DETAILS			PRIMARY KEY	FOREIGN KEY REF.
+	===========	========	==================	===========	================
+	POSTID		SERIAL		Post ID			X			
+	POSTER		VARCHAR		Username of poster			USERS-USERNAME
 	CONTENT		VARCHAR		Post content			
 	DATE		NUMERIC		Posting date			
 	TIME		NUMERIC		Posting time			
 	TITLE		VARCHAR		Post title		 			
-	IMAGE		INTEGER		Image ID		 				UPLOADS-ID
-	===========	=========  	===================	===========	================
+	IMAGE		INTEGER		Image ID		 		UPLOADS-ID
+	===========	========  	==================	===========	================
 
 	
 B - Posts Table Create Statement
