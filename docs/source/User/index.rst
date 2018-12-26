@@ -13,6 +13,12 @@ User Guide
   :align: left
 
   Home Page
+.. image:: Images/homepage.png
+  :width: 200px
+  :height: 100px
+  :scale: 50 %
+  :alt: alternate text
+  :align: right
   
 
   
