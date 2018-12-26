@@ -5,8 +5,9 @@ User Guide
 
 
 
-.. figure:: Images/homepage.png
-  :scale: 75 %
+.. image:: Images/homepage.png
+  :width: 690px
+  :height: 330px
   :alt: Home Page
 
   Home Page
