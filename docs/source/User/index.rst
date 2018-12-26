@@ -20,6 +20,8 @@ User Guide
   :alt: alternate text
   :align: right
   
+  Home Page
+  
 
   
 .. toctree::
