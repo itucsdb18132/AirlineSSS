@@ -20,3 +20,13 @@ Login
   :align: center
   
   Enter your username and password to login.
+  
+Forgot Password
+---------------
+
+.. figure:: Images/forgotpass.png
+  :scale: 100%
+  :alt: Forgot Password Form
+  :align: center
+  
+  Your password will be sent to your email address.
