@@ -1,5 +1,5 @@
-Parts Implemented by Selim Enes Kılıçaslan
-==========================================
+User Documentation Implemented by Selim Enes Kılıçaslan
+=======================================================
 
 Register
 --------

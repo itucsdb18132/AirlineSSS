@@ -25,7 +25,7 @@ User Guide
   
 .. toctree::
 
-   selim
+   Selim/index
    sercan
    said
    
