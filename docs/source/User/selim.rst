@@ -4,19 +4,19 @@ Parts Implemented by Selim Enes Kılıçaslan
 Register
 --------
 
-.. image:: Images/Register.png
-  :width: 531px
-  :height: 563px
+.. figure:: Images/Register.png
   :scale: 100%
-  :alt: alternate text
+  :alt: Register Form
   :align: center
+  
+  Fill the required fields to register.
   
 Login
 -----
 
-.. image:: Images/Login.png
-  :width: 534px
-  :height: 658px
+.. figure:: Images/Login.png
   :scale: 100%
-  :alt: alternate text
+  :alt: Login Form
   :align: center
+  
+  Enter your username and password to login.
