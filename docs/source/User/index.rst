@@ -5,7 +5,7 @@ User Guide
 
 
 
-.. image:: Images/homepage.png
+.. figure:: Images/homepage.png
    :width: 690px
    :height: 330px
    :scale: 100 %
