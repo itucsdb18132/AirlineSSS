@@ -4,7 +4,7 @@ User Documentation Implemented by Selim Enes Kılıçaslan
 Register
 --------
 
-.. figure:: Images/Register.png
+.. figure:: ../../Images/Register.png
   :scale: 100%
   :alt: Register Form
   :align: center
@@ -14,7 +14,7 @@ Register
 Login
 -----
 
-.. figure:: Images/Login.png
+.. figure:: ../../Images/Login.png
   :scale: 100%
   :alt: Login Form
   :align: center
@@ -24,7 +24,7 @@ Login
 Forgot Password
 ---------------
 
-.. figure:: Images/forgotpass.png
+.. figure:: ../../Images/forgotpass.png
   :scale: 100%
   :alt: Forgot Password Form
   :align: center
